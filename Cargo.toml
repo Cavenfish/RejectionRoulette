@@ -1,0 +1,16 @@
+[package]
+name = "RejectionRoulette"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.102"
+chrono = "0.4.44"
+dioxus = { version = "0.7.1", features = ["router", "html"] }
+dirs = "6.0.0"
+rusqlite = { version = "0.38.0", features = ["bundled"] }
+serde = { version = "1.0.228", features = ["derive"] }
+
+[features]
+default = ["desktop"]
+desktop = ["dioxus/desktop"]
