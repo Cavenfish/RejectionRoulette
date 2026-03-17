@@ -2,6 +2,8 @@ use dioxus::prelude::*;
 
 use crate::{backend::db::load_db, components::{AppsTable, EntryForm, tables::Application}};
 
+const STYLE: Asset = asset!("assets/styling/main.scss");
+
 /// The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]
 pub fn Home() -> Element {
@@ -17,13 +19,11 @@ pub fn Home() -> Element {
         })
     })?;
 
-    let table = tmp.map(|q| q.unwrap()).collect::<Vec<Application>>();
-
-    use_context_provider(|| table);
+    let table = use_signal(|| tmp.map(|q| q.unwrap()).collect::<Vec<Application>>());
 
     rsx! {
+        document::Stylesheet { href: STYLE }
         h1 { "Job Application Tracker" }
-        EntryForm {}
-        AppsTable { }
+        AppsTable { table }
     }
 }

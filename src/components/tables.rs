@@ -1,6 +1,8 @@
 use dioxus::{prelude::*};
 use serde::{Serialize, Deserialize};
 
+use crate::components::EntryForm;
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Application {
     pub id: i64,
@@ -10,11 +12,27 @@ pub struct Application {
 }
 
 #[component]
-pub fn AppsTable() -> Element {
-    let table = use_context::<Vec<Application>>();
+pub fn AppsTable(table: WriteSignal<Vec<Application>>) -> Element {
+    let mut visible = use_signal(|| false);
 
     rsx! {
-        table { 
+        div { 
+            class: "table-title",
+            h3 { "Applications" }
+            button {
+                style: "width: 100px",
+                onsubmit: move |_| visible.set(!visible()),
+                "Add New"
+            }
+        }
+        if visible() {
+            div {
+                class: "overlay",
+                h1 {"HELLO WORLD"}
+                // EntryForm { table }
+            }
+        } else {
+            table { 
             thead { 
                 tr { 
                     th { "Company" }
@@ -32,5 +50,6 @@ pub fn AppsTable() -> Element {
                 }
               }
          }
+        }
     }
 }

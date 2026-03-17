@@ -12,7 +12,7 @@ pub struct JobApplication {
 }
 
 #[component]
-pub fn EntryForm() -> Element {
+pub fn EntryForm(mut table: WriteSignal<Vec<Application>>) -> Element {
     rsx! {
         h3 { "Add new job application" }
         form { 
@@ -29,7 +29,7 @@ pub fn EntryForm() -> Element {
                     params![values.company, values.role, values.date]
                 ).unwrap();
                 
-                consume_context::<Vec<Application>>().push(
+                table.push(
                     Application { 
                         id: 100, 
                         company: values.company, 

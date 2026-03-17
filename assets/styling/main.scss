@@ -1,0 +1,22 @@
+@use "theme";
+
+body {
+    background-color: theme.$primary-bg;
+    color: theme.$primary-fg;
+    font-family: theme.$font-stack;
+}
+
+form {
+    display: block;
+    width: 100%;
+
+    input {
+        width: 100px;
+        height: 20px;
+    }
+
+    button {
+        width: 100px;
+        height: 50px;
+    }
+}
