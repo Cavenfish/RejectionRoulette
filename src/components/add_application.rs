@@ -1,8 +1,7 @@
 use dioxus::{prelude::*};
 use serde::{Deserialize, Serialize};
-use rusqlite::params;
 
-use crate::{backend::db::load_db, components::tables::Application};
+use crate::{components::tables::Application};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JobApplication {
@@ -17,17 +16,8 @@ pub fn EntryForm(mut table: WriteSignal<Vec<Application>>) -> Element {
         h3 { "Add new job application" }
         form { 
             onsubmit: move |evt: FormEvent| async move {
-                let db = load_db().unwrap();
 
                 let values: JobApplication = evt.parsed_values().unwrap();
-
-                db.execute(
-                    "INSERT INTO applications (
-                    company, role, date) VALUES (
-                    ?1, ?2, ?3)
-                    ",
-                    params![values.company, values.role, values.date]
-                ).unwrap();
                 
                 table.push(
                     Application { 

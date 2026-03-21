@@ -1,10 +1,8 @@
 use dioxus::prelude::*;
 
-mod backend;
 mod components;
 mod views;
 
-use backend::init_local;
 use views::{Home, Navbar};
 
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
@@ -30,7 +28,6 @@ enum Route {
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 
 fn main() {
-    init_local();
     // The `launch` function is the main entry point for a dioxus app. It takes a component and renders it with the platform feature
     // you have enabled
     dioxus::launch(App);
