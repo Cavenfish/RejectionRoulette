@@ -21,7 +21,10 @@ pub enum RrCommands {
     Update(UpdateArgs),
 
     /// Show
-    Show
+    Show,
+
+    /// Stats
+    Stats
 }
 
 #[derive(Args)]
@@ -80,6 +83,7 @@ pub struct UpdateArgs {
 
 fn show() {
     let db = AppDB::new();
+    db.scan_for_ghosts().unwrap();
 
     let apps: Vec<Application> = db.pull_all().unwrap();
 
@@ -107,10 +111,21 @@ fn show() {
         println!(
             "{: <5} {: <15} {: <15} {: <10}",
             app.id.unwrap(), company, app.date, status
-        )
+        );
 
     }
 
+}
+
+fn stats() {
+    let db = AppDB::new();
+    db.scan_for_ghosts().unwrap();
+
+    let stats = db.get_stats().unwrap();
+
+    for (key, value) in stats {
+        println!("{}: {}", key, value);
+    }
 }
 
 fn add(cmds: AddArgs) {
@@ -148,6 +163,7 @@ fn main() {
         RrCommands::Add(cmds) => add(cmds),
         RrCommands::Remove(cmds) => todo!(),
         RrCommands::Update(cmds) => update(cmds),
-        RrCommands::Show => show()
+        RrCommands::Show => show(),
+        RrCommands::Stats => stats(),
     }
 }

@@ -1,9 +1,9 @@
-use std::{path::PathBuf, fs};
+use std::{collections::HashMap, fs, path::PathBuf};
 
 use dirs::data_dir;
 use rusqlite::{params, Connection};
 use anyhow::Result;
-use chrono::Local;
+use chrono::{Local, NaiveDate};
 
 #[derive(Debug, Clone)]
 pub struct Application {
@@ -24,11 +24,11 @@ pub struct Interview {
 }
 
 pub trait Database<T> {
-    fn insert(self, item: T) -> Result<()>;
-    fn delete(self, id: i64) -> Result<()>;
-    fn edit(self, item: T, id: i64) -> Result<()>;
-    // fn search(self) -> Result<Vec<T>>;
-    fn pull_all(self) -> Result<Vec<T>>;
+    fn insert(&self, item: T) -> Result<()>;
+    fn delete(&self, id: i64) -> Result<()>;
+    fn edit(&self, item: T, id: i64) -> Result<()>;
+    // fn search(&self) -> Result<Vec<T>>;
+    fn pull_all(&self) -> Result<Vec<T>>;
 }
 
 #[derive(Debug)]
@@ -52,10 +52,38 @@ impl AppDB {
 
         Self { filename, connection }
     }
+
+    pub fn scan_for_ghosts(&self) -> Result<()> {
+        let mut apps: Vec<Application> = self.pull_all()?;
+
+        for app in apps.iter_mut() {
+            let today = Local::now().date_naive();
+            let sent = NaiveDate::parse_from_str(&app.date, "%Y/%m/%d")?;
+
+            if today.signed_duration_since(sent).num_weeks() >= 8 && app.status.as_str() == "Pending" {
+                app.status = "Ghost".to_string();
+            };
+
+            self.edit(app.clone(), app.id.unwrap())?;
+        };
+
+        Ok(())
+    }
+
+    pub fn get_stats(&self) -> Result<HashMap<String, u32>> {
+        let apps: Vec<Application> = self.pull_all()?;
+        let mut stats: HashMap<String, u32> = HashMap::new();
+
+        for app in apps.iter() {
+            *stats.entry(app.status.clone()).or_insert(0) += 1;
+        }
+
+        Ok(stats)
+    }
 }
 
 impl Database<Application> for AppDB {
-    fn insert(self, item: Application) -> Result<()> {
+    fn insert(&self, item: Application) -> Result<()> {
 
         let date = match item.date.as_str() {
             // Handle default value
@@ -80,13 +108,13 @@ impl Database<Application> for AppDB {
         Ok(())
     }
 
-    fn delete(self, id: i64) -> Result<()> {
+    fn delete(&self, id: i64) -> Result<()> {
         self.connection.execute("DELETE FROM applications WHERE id=?1", params![id])?;
 
         Ok(())
     }
 
-    fn edit(self, item: Application, id: i64) -> Result<()> {
+    fn edit(&self, item: Application, id: i64) -> Result<()> {
         self.connection.execute(
             "UPDATE applications
             SET company=?1, role=?2, date=?3, status=?4
@@ -98,7 +126,7 @@ impl Database<Application> for AppDB {
         Ok(())
     }
 
-    fn pull_all(self) -> Result<Vec<Application>> {
+    fn pull_all(&self) -> Result<Vec<Application>> {
         let mut stmt = self.connection.prepare("SELECT * FROM applications")?;
 
         let tmp = stmt.query_map([], |row| {
@@ -116,7 +144,7 @@ impl Database<Application> for AppDB {
 }
 
 impl Database<Interview> for AppDB {
-    fn insert(self, item: Interview) -> Result<()> {
+    fn insert(&self, item: Interview) -> Result<()> {
 
         self.connection.execute(
             "INSERT INTO interviews (
@@ -129,13 +157,13 @@ impl Database<Interview> for AppDB {
         Ok(())
     }
 
-    fn delete(self, id: i64) -> Result<()> {
+    fn delete(&self, id: i64) -> Result<()> {
         self.connection.execute("DELETE FROM interviews WHERE id=?1", params![id])?;
 
         Ok(())
     }
 
-    fn edit(self, item: Interview, id: i64) -> Result<()> {
+    fn edit(&self, item: Interview, id: i64) -> Result<()> {
         self.connection.execute(
             "UPDATE interviews
             SET company=?1, role=?2, date=?3, status=?4
@@ -147,7 +175,7 @@ impl Database<Interview> for AppDB {
         Ok(())
     }
 
-    fn pull_all(self) -> Result<Vec<Interview>> {
+    fn pull_all(&self) -> Result<Vec<Interview>> {
         let mut stmt = self.connection.prepare("SELECT * FROM interviews")?;
 
         let tmp = stmt.query_map([], |row| {
