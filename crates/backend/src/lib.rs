@@ -29,6 +29,7 @@ pub trait Database<T> {
     fn edit(&self, item: T, id: i64) -> Result<()>;
     // fn search(&self) -> Result<Vec<T>>;
     fn pull_all(&self) -> Result<Vec<T>>;
+    fn pull_recent(&self, n: i64) -> Result<Vec<T>>;
 }
 
 #[derive(Debug)]
@@ -141,6 +142,22 @@ impl Database<Application> for AppDB {
 
         Ok(tmp.map(|q| q.unwrap()).collect())
     }
+
+    fn pull_recent(&self, n: i64) -> Result<Vec<Application>> {
+        let mut stmt = self.connection.prepare("SELECT * FROM applications ORDER BY id DESC LIMIT ?1;")?;
+
+        let tmp = stmt.query_map(params![n], |row| {
+            Ok(Application {
+                id: Some(row.get(0)?),
+                company: row.get(1)?,
+                role: row.get(2)?,
+                date: row.get(3)?,
+                status: row.get(4)?
+            })
+        })?;
+
+        Ok(tmp.map(|q| q.unwrap()).collect())
+    }
 }
 
 impl Database<Interview> for AppDB {
@@ -179,6 +196,22 @@ impl Database<Interview> for AppDB {
         let mut stmt = self.connection.prepare("SELECT * FROM interviews")?;
 
         let tmp = stmt.query_map([], |row| {
+            Ok(Interview {
+                id: Some(row.get(0)?),
+                company: row.get(1)?,
+                role: row.get(2)?,
+                date: row.get(3)?,
+                status: row.get(4)?
+            })
+        })?;
+
+        Ok(tmp.map(|q| q.unwrap()).collect())
+    }
+
+    fn pull_recent(&self, n: i64) -> Result<Vec<Interview>> {
+        let mut stmt = self.connection.prepare("SELECT * FROM interviews ORDER BY id DESC LIMIT ?1;")?;
+
+        let tmp = stmt.query_map(params![n], |row| {
             Ok(Interview {
                 id: Some(row.get(0)?),
                 company: row.get(1)?,

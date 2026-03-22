@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 mod components;
 mod views;
 
-use views::{Home, Navbar};
+use views::{Home, Dashboard, Navbar};
 
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
@@ -19,13 +19,13 @@ enum Route {
         // The route attribute defines the URL pattern that a specific route matches. If that pattern matches the URL,
         // the component for that route will be rendered. The component name that is rendered defaults to the variant name.
         #[route("/")]
-        Home {},
+        Dashboard {},
 }
 
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.
 // The macro returns an `Asset` type that will display as the path to the asset in the browser or a local path in desktop bundles.
 // The asset macro also minifies some assets like CSS and JS to make bundled smaller
-const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
+const MAIN_CSS: Asset = asset!("/assets/styling/main.scss");
 
 fn main() {
     // The `launch` function is the main entry point for a dioxus app. It takes a component and renders it with the platform feature
