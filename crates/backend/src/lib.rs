@@ -90,7 +90,7 @@ impl Database<Application> for AppDB {
             "today" => {
                 let tmp = Local::now();
 
-                &tmp.format("%Y-%m-%d").to_string()
+                &tmp.format("%Y/%m/%d").to_string()
             }
 
             // Handle user input
