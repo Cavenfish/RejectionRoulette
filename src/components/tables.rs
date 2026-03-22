@@ -1,15 +1,9 @@
 use dioxus::{prelude::*};
 use serde::{Serialize, Deserialize};
+use backend::Application;
 
 use crate::components::EntryForm;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Application {
-    pub id: i64,
-    pub company: String,
-    pub role: String,
-    pub date: String,
-}
 
 #[component]
 pub fn AppsTable(table: WriteSignal<Vec<Application>>) -> Element {

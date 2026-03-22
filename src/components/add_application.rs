@@ -1,13 +1,13 @@
 use dioxus::{prelude::*};
 use serde::{Deserialize, Serialize};
-
-use crate::{components::tables::Application};
+use backend::Application;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JobApplication {
     pub company: String,
     pub role: String,
-    pub date: String
+    pub date: String,
+    pub status: String
 }
 
 #[component]
@@ -21,10 +21,11 @@ pub fn EntryForm(mut table: WriteSignal<Vec<Application>>) -> Element {
                 
                 table.push(
                     Application { 
-                        id: 100, 
+                        id: Some(100), 
                         company: values.company, 
                         role: values.role, 
-                        date: values.date 
+                        date: values.date,
+                        status: values.status
                     }
                 );
             },

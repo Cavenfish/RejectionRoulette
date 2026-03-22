@@ -9,9 +9,11 @@ members = ["crates/*"]
 
 [workspace.dependencies]
 anyhow = "1.0.102"
+backend = { path = "./crates/backend" } 
 
 [dependencies]
 anyhow.workspace = true
+backend.workspace = true
 dioxus = { version = "0.7.1", features = ["router", "html"] }
 serde = { version = "1.0.228", features = ["derive"] }
 
