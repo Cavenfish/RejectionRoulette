@@ -1,0 +1,27 @@
+@use "theme";
+
+.table-title {
+    color: theme.$secondary-fg;
+}
+
+.apps-table {
+    table {
+        width: 100%;
+        table-layout: fixed;
+
+        thead {
+            background-color: theme.$secondary-bg;
+            color: theme.$secondary-fg;
+            padding: 20px 15px;
+            font-weight: 500;
+        }
+
+        tbody {
+            padding: 15px;
+            font-weight: 300;
+            text-align: center;
+            border: 1px;
+            border-bottom: solid 1px theme.$tertiary-bg;
+        }
+    }
+}

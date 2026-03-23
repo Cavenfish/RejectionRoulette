@@ -7,43 +7,39 @@ use crate::components::EntryForm;
 
 #[component]
 pub fn AppsTable(table: WriteSignal<Vec<Application>>) -> Element {
-    let mut visible = use_signal(|| false);
-
     rsx! {
         div { 
             class: "table-title",
             h3 { "Applications" }
-            button {
-                style: "width: 100px",
-                onsubmit: move |_| visible.set(!visible()),
-                "Add New"
-            }
         }
-        if visible() {
-            div {
-                class: "overlay",
-                h1 {"HELLO WORLD"}
-                // EntryForm { table }
-            }
-        } else {
+        div {
+            class: "apps-table",
             table { 
-            thead { 
-                tr { 
-                    th { "Company" }
-                    th { "Role" }
-                    th { "Date" }
-                 }
-             }
-             tbody { 
-                for item in table.iter() {
+                thead { 
                     tr {
-                        td { "{item.company}" }
-                        td { "{item.role}" }
-                        td { "{item.date}" }
+                        th { "ID" }
+                        th { "Company" }
+                        th { "Role" }
+                        th { "Date" }
+                        th { "Status" }
                     }
                 }
-              }
-         }
+                tbody { 
+                    for item in table.iter() {
+                        tr {
+                            if let Some(id) = item.id {
+                                td { "{id}" }
+                            } else {
+                                td { "--" }
+                            }
+                            td { "{item.company}" }
+                            td { "{item.role}" }
+                            td { "{item.date}" }
+                            td { "{item.status}" }
+                        }
+                    }
+                }
+            }
         }
     }
 }

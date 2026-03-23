@@ -1,4 +1,5 @@
 @use "theme";
+@use "table";
 
 body {
     background-color: theme.$primary-bg;
@@ -19,4 +20,12 @@ form {
         width: 100px;
         height: 50px;
     }
+}
+
+.recent-apps {
+    display: block;
+}
+
+.stats-pie {
+    display: block;
 }

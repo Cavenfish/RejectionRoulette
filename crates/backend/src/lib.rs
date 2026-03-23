@@ -1,4 +1,6 @@
-use std::{collections::HashMap, fs, path::PathBuf};
+pub mod plots;
+
+use std::{collections::BTreeMap, fs, path::PathBuf};
 
 use dirs::data_dir;
 use rusqlite::{params, Connection};
@@ -26,6 +28,7 @@ pub struct Interview {
 pub trait Database<T> {
     fn insert(&self, item: T) -> Result<()>;
     fn delete(&self, id: i64) -> Result<()>;
+    fn update(&self, id: i64, status: String) -> Result<()>;
     fn edit(&self, item: T, id: i64) -> Result<()>;
     // fn search(&self) -> Result<Vec<T>>;
     fn pull_all(&self) -> Result<Vec<T>>;
@@ -71,9 +74,9 @@ impl AppDB {
         Ok(())
     }
 
-    pub fn get_stats(&self) -> Result<HashMap<String, u32>> {
+    pub fn get_stats(&self) -> Result<BTreeMap<String, u32>> {
         let apps: Vec<Application> = self.pull_all()?;
-        let mut stats: HashMap<String, u32> = HashMap::new();
+        let mut stats: BTreeMap<String, u32> = BTreeMap::new();
 
         for app in apps.iter() {
             *stats.entry(app.status.clone()).or_insert(0) += 1;
@@ -111,6 +114,16 @@ impl Database<Application> for AppDB {
 
     fn delete(&self, id: i64) -> Result<()> {
         self.connection.execute("DELETE FROM applications WHERE id=?1", params![id])?;
+
+        Ok(())
+    }
+
+    fn update(&self, id: i64, status: String) -> Result<()> {
+        self.connection.execute(
+            "UPDATE applications
+            SET status=?1 WHERE id=?2", 
+            params![status, id]
+        )?;
 
         Ok(())
     }
@@ -176,6 +189,16 @@ impl Database<Interview> for AppDB {
 
     fn delete(&self, id: i64) -> Result<()> {
         self.connection.execute("DELETE FROM interviews WHERE id=?1", params![id])?;
+
+        Ok(())
+    }
+
+    fn update(&self, id: i64, status: String) -> Result<()> {
+        self.connection.execute(
+            "UPDATE interviews
+            SET status=?1 WHERE id=?2", 
+            params![status, id]
+        )?;
 
         Ok(())
     }
