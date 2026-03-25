@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use backend::{AppDB, Database, Application, plots::stats_pie};
+use backend::{AppDB, Application, Database, plots::{stats_pie, stats_sankey}};
 
 use crate::components::AppsTable;
 
@@ -8,14 +8,18 @@ pub fn Dashboard() -> Element {
     let db = AppDB::new();
     let stats = db.get_stats().unwrap();
 
-    let table: Signal<Vec<Application>> = use_signal(|| db.pull_all().unwrap());
+    let table: Signal<Vec<Application>> = use_signal(|| {
+        let mut apps = db.pull_all().unwrap();
+        apps.reverse();
+        apps
+    });
 
-    let pie= stats_pie(&stats).unwrap();
+    let sankey = stats_sankey(&stats).unwrap();
 
     rsx! {
         div {
             class: "stats-pie",
-            dangerous_inner_html: pie,
+            dangerous_inner_html: sankey,
         }
         div {
             class: "recent-apps",
