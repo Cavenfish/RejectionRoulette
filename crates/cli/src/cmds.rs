@@ -1,14 +1,119 @@
 use anyhow::Result;
-use backend::database::{AppDB, Application};
+use backend::database::{AppDB, Application, Interview, Offer};
 use colored::Colorize;
 
-use super::args::{AddArgs, EditArgs, RemoveArgs, UpdateArgs};
+use crate::args::{AddCommand, AddSubcommand, ShowArgs};
 
-pub fn show() -> Result<()> {
+use super::args::{EditArgs, RemoveArgs, UpdateArgs};
+
+pub fn stats() -> Result<()> {
     let db = AppDB::new();
     db.scan_for_ghosts()?;
 
-    let apps: Vec<Application> = db.get_applications()?;
+    let stats = db.get_stats()?;
+
+    for (key, value) in stats {
+        println!("{}: {}", key, value);
+    }
+
+    Ok(())
+}
+
+pub fn add(cmd: AddCommand) -> Result<()> {
+    let db = AppDB::new();
+
+    match cmd.command {
+        AddSubcommand::Application(cmds) => {
+            let status = if cmds.rejected {
+                "Rejected".to_string()
+            } else {
+                "Pending".to_string()
+            };
+
+            let app = Application {
+                id: None,
+                company: cmds.company,
+                role: cmds.role,
+                status,
+                submit_date: cmds.date,
+            };
+
+            db.add_application(app)
+        }
+        AddSubcommand::Interview(cmds) => {
+            let interview = Interview {
+                id: None,
+                application_id: cmds.id,
+                interview_date: cmds.date,
+                interview_type: cmds.category,
+                notes: cmds.notes,
+            };
+
+            db.add_interview(interview)
+        }
+        AddSubcommand::Offer(cmds) => {
+            let offer = Offer {
+                id: None,
+                application_id: cmds.id,
+                base_salary: cmds.salary,
+                bonus: cmds.bonus,
+                equity_details: cmds.equity,
+                expiration_date: cmds.date,
+                is_accepted: cmds.accepted,
+            };
+
+            db.add_offer(offer)
+        }
+    }
+}
+
+pub fn remove(cmds: RemoveArgs) -> Result<()> {
+    let db = AppDB::new();
+
+    db.delete(cmds.id)
+}
+
+pub fn update(cmds: UpdateArgs) -> Result<()> {
+    let db = AppDB::new();
+
+    db.update_application(cmds.id, cmds.status)
+}
+
+pub fn edit(cmds: EditArgs) -> Result<()> {
+    let db = AppDB::new();
+
+    let app = Application {
+        id: None,
+        company: cmds.company,
+        role: cmds.role,
+        status: cmds.status,
+        submit_date: cmds.date,
+    };
+
+    db.edit_application(app, cmds.id)
+}
+
+pub fn show(cmds: ShowArgs) -> Result<()> {
+    let db = AppDB::new();
+    db.scan_for_ghosts()?;
+
+    if cmds.applications {
+        show_applications(&db)?;
+    };
+
+    if cmds.interviews {
+        show_interviews(&db)?;
+    }
+
+    if cmds.offers {
+        todo!();
+    }
+
+    Ok(())
+}
+
+fn show_applications(db: &AppDB) -> Result<()> {
+    let apps = db.get_applications()?;
 
     println!(
         "{: <5} {: <15} {: <25} {: <15} {: <10}",
@@ -50,55 +155,26 @@ pub fn show() -> Result<()> {
     Ok(())
 }
 
-pub fn stats() -> Result<()> {
-    let db = AppDB::new();
-    db.scan_for_ghosts()?;
+fn show_interviews(db: &AppDB) -> Result<()> {
+    let interviews = db.get_interviews()?;
 
-    let stats = db.get_stats()?;
+    println!(
+        "{: <5} {: <15} {: <25} {: <15} {: <10}",
+        "ID", "Company", "Role", "Submit Date", "Status"
+    );
 
-    for (key, value) in stats {
-        println!("{}: {}", key, value);
+    println!("{:-<75}", "");
+
+    for item in interviews.iter() {
+        println!(
+            "{: <5} {: <15} {: <25} {: <15} {: <10}",
+            item.id.unwrap(),
+            item.application_id,
+            item.interview_type,
+            item.interview_date,
+            item.notes
+        );
     }
 
     Ok(())
-}
-
-pub fn add(cmds: AddArgs) -> Result<()> {
-    let db = AppDB::new();
-
-    let app = Application {
-        id: None,
-        company: cmds.company,
-        role: cmds.role,
-        status: cmds.status,
-        submit_date: cmds.date,
-    };
-
-    db.add_application(app)
-}
-
-pub fn remove(cmds: RemoveArgs) -> Result<()> {
-    let db = AppDB::new();
-
-    db.delete(cmds.id)
-}
-
-pub fn update(cmds: UpdateArgs) -> Result<()> {
-    let db = AppDB::new();
-
-    db.update_application(cmds.id, cmds.status)
-}
-
-pub fn edit(cmds: EditArgs) -> Result<()> {
-    let db = AppDB::new();
-
-    let app = Application {
-        id: None,
-        company: cmds.company,
-        role: cmds.role,
-        status: cmds.status,
-        submit_date: cmds.date,
-    };
-
-    db.edit_application(app, cmds.id)
 }

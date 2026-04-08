@@ -14,7 +14,7 @@ fn main() {
         RrCommands::Remove(cmds) => remove(cmds),
         RrCommands::Update(cmds) => update(cmds),
         RrCommands::Edit(cmds) => edit(cmds),
-        RrCommands::Show => show(),
+        RrCommands::Show(cmds) => show(cmds),
         RrCommands::Stats => stats(),
     }
     .unwrap();

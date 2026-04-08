@@ -170,4 +170,10 @@ impl AppDB {
 
         Ok(tmp.map(|q| q.unwrap()).collect())
     }
+
+    pub fn add_offer(&self, item: Offer) -> Result<()> {
+        item.add_row(&self.connection)?;
+
+        Ok(())
+    }
 }
