@@ -1,21 +1,20 @@
-use dioxus::{prelude::*};
-use serde::{Serialize, Deserialize};
-use backend::Application;
+use backend::database::Application;
+use dioxus::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use crate::components::EntryForm;
-
 
 #[component]
 pub fn AppsTable(table: WriteSignal<Vec<Application>>) -> Element {
     rsx! {
-        div { 
+        div {
             class: "table-title",
             h3 { "Applications" }
         }
         div {
             class: "apps-table",
-            table { 
-                thead { 
+            table {
+                thead {
                     tr {
                         th { "ID" }
                         th { "Company" }
@@ -24,7 +23,7 @@ pub fn AppsTable(table: WriteSignal<Vec<Application>>) -> Element {
                         th { "Status" }
                     }
                 }
-                tbody { 
+                tbody {
                     for item in table.iter() {
                         tr {
                             if let Some(id) = item.id {
@@ -34,7 +33,7 @@ pub fn AppsTable(table: WriteSignal<Vec<Application>>) -> Element {
                             }
                             td { "{item.company}" }
                             td { "{item.role}" }
-                            td { "{item.date}" }
+                            td { "{item.submit_date}" }
                             td { "{item.status}" }
                         }
                     }

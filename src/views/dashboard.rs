@@ -1,5 +1,8 @@
+use backend::{
+    database::{AppDB, Application},
+    plots::{stats_pie, stats_sankey},
+};
 use dioxus::prelude::*;
-use backend::{AppDB, Application, Database, plots::{stats_pie, stats_sankey}};
 
 use crate::components::AppsTable;
 
@@ -9,7 +12,7 @@ pub fn Dashboard() -> Element {
     let stats = db.get_stats().unwrap();
 
     let table: Signal<Vec<Application>> = use_signal(|| {
-        let mut apps = db.pull_all().unwrap();
+        let mut apps = db.get_applications().unwrap();
         apps.reverse();
         apps
     });

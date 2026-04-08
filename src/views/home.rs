@@ -1,5 +1,5 @@
+use backend::database::{AppDB, Application};
 use dioxus::prelude::*;
-use backend::{AppDB, Database, Application};
 
 use crate::components::AppsTable;
 
@@ -10,7 +10,7 @@ const STYLE: Asset = asset!("assets/styling/main.scss");
 pub fn Home() -> Element {
     let db = AppDB::new();
 
-    let table: Signal<Vec<Application>> = use_signal(|| db.pull_all().unwrap());
+    let table: Signal<Vec<Application>> = use_signal(|| db.get_applications().unwrap());
 
     rsx! {
         document::Stylesheet { href: STYLE }
