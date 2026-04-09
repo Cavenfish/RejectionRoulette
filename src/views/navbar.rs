@@ -19,6 +19,14 @@ pub fn Navbar() -> Element {
                 to: Route::Dashboard {},
                 "Dashboard"
             }
+            Link {
+                to: Route::ApplicationsPage {},
+                "Applications"
+            }
+            Link {
+                to: Route::InterviewsPage {},
+                "Interviews"
+            }
         }
 
         // The `Outlet` component is used to render the next component inside the layout. In this case, it will render either

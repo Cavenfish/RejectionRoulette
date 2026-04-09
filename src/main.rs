@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 mod components;
 mod views;
 
-use views::{Home, Dashboard, Navbar};
+use views::{ApplicationsPage, Dashboard, Home, InterviewsPage, Navbar};
 
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
@@ -20,6 +20,12 @@ enum Route {
         // the component for that route will be rendered. The component name that is rendered defaults to the variant name.
         #[route("/")]
         Dashboard {},
+
+        #[route("/applications")]
+        ApplicationsPage {},
+
+        #[route("/interviews")]
+        InterviewsPage {},
 }
 
 // We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.
@@ -32,7 +38,6 @@ fn main() {
     // you have enabled
     dioxus::launch(App);
 }
-
 
 #[component]
 fn App() -> Element {

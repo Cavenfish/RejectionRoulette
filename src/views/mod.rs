@@ -16,3 +16,9 @@ pub use navbar::Navbar;
 
 mod dashboard;
 pub use dashboard::Dashboard;
+
+mod applications_page;
+pub use applications_page::ApplicationsPage;
+
+mod interviews_page;
+pub use interviews_page::InterviewsPage;
