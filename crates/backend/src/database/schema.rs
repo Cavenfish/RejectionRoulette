@@ -2,31 +2,23 @@ use anyhow::Result;
 use chrono::Local;
 use rusqlite::{Connection, Row, params};
 
-pub trait TableRow: Sized {
+pub trait RowRead: Sized {
     fn from_row(row: &Row) -> rusqlite::Result<Self>;
+}
+
+pub trait RowInsert {
     fn add_row(&self, conn: &Connection) -> Result<()>;
 }
 
 #[derive(Debug, Clone)]
-pub struct Application {
-    pub id: Option<i64>,
+pub struct NewApplication {
     pub company: String,
     pub role: String,
     pub status: String,
     pub submit_date: String,
 }
 
-impl TableRow for Application {
-    fn from_row(row: &Row) -> rusqlite::Result<Self> {
-        Ok(Self {
-            id: Some(row.get(0)?),
-            company: row.get(1)?,
-            role: row.get(2)?,
-            status: row.get(3)?,
-            submit_date: row.get(4)?,
-        })
-    }
-
+impl RowInsert for NewApplication {
     fn add_row(&self, conn: &Connection) -> Result<()> {
         let date = match self.submit_date.as_str() {
             // Handle default value
@@ -53,25 +45,35 @@ impl TableRow for Application {
 }
 
 #[derive(Debug, Clone)]
-pub struct Interview {
-    pub id: Option<i64>,
+pub struct Application {
+    pub id: i64,
+    pub company: String,
+    pub role: String,
+    pub status: String,
+    pub submit_date: String,
+}
+
+impl RowRead for Application {
+    fn from_row(row: &Row) -> rusqlite::Result<Self> {
+        Ok(Self {
+            id: row.get(0)?,
+            company: row.get(1)?,
+            role: row.get(2)?,
+            status: row.get(3)?,
+            submit_date: row.get(4)?,
+        })
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct NewInterview {
     pub application_id: i64,
     pub interview_date: String,
     pub interview_type: String,
     pub notes: String,
 }
 
-impl TableRow for Interview {
-    fn from_row(row: &Row) -> rusqlite::Result<Self> {
-        Ok(Self {
-            id: Some(row.get(0)?),
-            application_id: row.get(1)?,
-            interview_date: row.get(2)?,
-            interview_type: row.get(3)?,
-            notes: row.get(4)?,
-        })
-    }
-
+impl RowInsert for NewInterview {
     fn add_row(&self, conn: &Connection) -> Result<()> {
         conn.execute(
             "INSERT INTO Interviews 
@@ -90,8 +92,32 @@ impl TableRow for Interview {
 }
 
 #[derive(Debug, Clone)]
-pub struct Offer {
-    pub id: Option<i64>,
+pub struct Interview {
+    pub id: i64,
+    pub application_id: i64,
+    pub company: String,
+    pub role: String,
+    pub interview_date: String,
+    pub interview_type: String,
+    pub notes: String,
+}
+
+impl RowRead for Interview {
+    fn from_row(row: &Row) -> rusqlite::Result<Self> {
+        Ok(Self {
+            id: row.get(0)?,
+            application_id: row.get(1)?,
+            company: row.get(2)?,
+            role: row.get(3)?,
+            interview_date: row.get(4)?,
+            interview_type: row.get(5)?,
+            notes: row.get(6)?,
+        })
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct NewOffer {
     pub application_id: i64,
     pub base_salary: i64,
     pub bonus: i64,
@@ -100,19 +126,7 @@ pub struct Offer {
     pub is_accepted: bool,
 }
 
-impl TableRow for Offer {
-    fn from_row(row: &Row) -> rusqlite::Result<Self> {
-        Ok(Self {
-            id: Some(row.get(0)?),
-            application_id: row.get(1)?,
-            base_salary: row.get(2)?,
-            bonus: row.get(3)?,
-            equity_details: row.get(4)?,
-            expiration_date: row.get(5)?,
-            is_accepted: row.get(6)?,
-        })
-    }
-
+impl RowInsert for NewOffer {
     fn add_row(&self, conn: &Connection) -> Result<()> {
         conn.execute(
             "INSERT INTO Offers
@@ -129,6 +143,35 @@ impl TableRow for Offer {
         )?;
 
         Ok(())
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Offer {
+    pub id: i64,
+    pub application_id: i64,
+    pub company: String,
+    pub role: String,
+    pub base_salary: i64,
+    pub bonus: i64,
+    pub equity_details: String,
+    pub expiration_date: String,
+    pub is_accepted: bool,
+}
+
+impl RowRead for Offer {
+    fn from_row(row: &Row) -> rusqlite::Result<Self> {
+        Ok(Self {
+            id: row.get(0)?,
+            application_id: row.get(1)?,
+            company: row.get(2)?,
+            role: row.get(3)?,
+            base_salary: row.get(4)?,
+            bonus: row.get(5)?,
+            equity_details: row.get(6)?,
+            expiration_date: row.get(7)?,
+            is_accepted: row.get(8)?,
+        })
     }
 }
 

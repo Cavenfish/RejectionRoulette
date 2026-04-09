@@ -1,4 +1,4 @@
-use backend::database::Application;
+use backend::database::{Application, NewApplication};
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -19,15 +19,6 @@ pub fn EntryForm(mut table: WriteSignal<Vec<Application>>) -> Element {
 
                 let values: JobApplication = evt.parsed_values().unwrap();
 
-                table.push(
-                    Application {
-                        id: None,
-                        company: values.company,
-                        role: values.role,
-                        status: values.status,
-                        submit_date: values.date,
-                    }
-                );
             },
             label { "Company" }
             input { r#type: "text", id: "company", name: "company" }

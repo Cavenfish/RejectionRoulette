@@ -1,5 +1,7 @@
 use anyhow::Result;
-use backend::database::{AppDB, Application, Interview, Offer};
+use backend::database::{
+    AppDB, Application, Interview, NewApplication, NewInterview, NewOffer, Offer,
+};
 use colored::Colorize;
 
 use crate::args::{AddCommand, AddSubcommand, ShowArgs};
@@ -30,8 +32,7 @@ pub fn add(cmd: AddCommand) -> Result<()> {
                 "Pending".to_string()
             };
 
-            let app = Application {
-                id: None,
+            let app = NewApplication {
                 company: cmds.company,
                 role: cmds.role,
                 status,
@@ -41,8 +42,7 @@ pub fn add(cmd: AddCommand) -> Result<()> {
             db.add_application(app)
         }
         AddSubcommand::Interview(cmds) => {
-            let interview = Interview {
-                id: None,
+            let interview = NewInterview {
                 application_id: cmds.id,
                 interview_date: cmds.date,
                 interview_type: cmds.category,
@@ -52,8 +52,7 @@ pub fn add(cmd: AddCommand) -> Result<()> {
             db.add_interview(interview)
         }
         AddSubcommand::Offer(cmds) => {
-            let offer = Offer {
-                id: None,
+            let offer = NewOffer {
                 application_id: cmds.id,
                 base_salary: cmds.salary,
                 bonus: cmds.bonus,
@@ -82,8 +81,7 @@ pub fn update(cmds: UpdateArgs) -> Result<()> {
 pub fn edit(cmds: EditArgs) -> Result<()> {
     let db = AppDB::new();
 
-    let app = Application {
-        id: None,
+    let app = NewApplication {
         company: cmds.company,
         role: cmds.role,
         status: cmds.status,
@@ -144,11 +142,7 @@ fn show_applications(db: &AppDB) -> Result<()> {
 
         println!(
             "{: <5} {: <15} {: <25} {: <15} {: <10}",
-            app.id.unwrap(),
-            company,
-            role,
-            app.submit_date,
-            status
+            app.id, company, role, app.submit_date, status
         );
     }
 
@@ -159,20 +153,22 @@ fn show_interviews(db: &AppDB) -> Result<()> {
     let interviews = db.get_interviews()?;
 
     println!(
-        "{: <5} {: <15} {: <25} {: <15} {: <10}",
-        "ID", "Company", "Role", "Submit Date", "Status"
+        "{: <5} {: <15} {: <25} {: <10}",
+        "ID", "Company", "Type", "Date"
     );
 
     println!("{:-<75}", "");
 
     for item in interviews.iter() {
+        let company = if item.company.chars().count() > 14 {
+            &(item.company.chars().take(11).collect::<String>() + "...")
+        } else {
+            &item.company
+        };
+
         println!(
-            "{: <5} {: <15} {: <25} {: <15} {: <10}",
-            item.id.unwrap(),
-            item.application_id,
-            item.interview_type,
-            item.interview_date,
-            item.notes
+            "{: <5} {: <15} {: <25} {: <10}",
+            item.id, company, item.interview_type, item.interview_date
         );
     }
 

@@ -5,7 +5,9 @@ use chrono::{Local, NaiveDate};
 use dirs::data_dir;
 use rusqlite::{Connection, params};
 
-use super::schema::{Application, Interview, Offer, TableRow, init_db};
+use crate::database::schema::{NewApplication, NewInterview, NewOffer};
+
+use super::schema::{Application, Interview, Offer, RowInsert, RowRead, init_db};
 
 //TODO
 // make funcs:
@@ -44,10 +46,8 @@ impl AppDB {
             if today.signed_duration_since(sent).num_weeks() >= 8
                 && app.status.as_str() == "Pending"
             {
-                app.status = "Ghost".to_string();
+                self.update_application(app.id, "Ghost".to_string())?;
             };
-
-            self.edit_application(app.clone(), app.id.unwrap())?;
         }
 
         Ok(())
@@ -90,7 +90,7 @@ impl AppDB {
         Ok(tmp.map(|q| q.unwrap()).collect())
     }
 
-    pub fn add_application(&self, item: Application) -> Result<()> {
+    pub fn add_application(&self, item: NewApplication) -> Result<()> {
         item.add_row(&self.connection)?;
 
         Ok(())
@@ -106,7 +106,7 @@ impl AppDB {
         Ok(())
     }
 
-    pub fn edit_application(&self, item: Application, id: i64) -> Result<()> {
+    pub fn edit_application(&self, item: NewApplication, id: i64) -> Result<()> {
         self.connection.execute(
             "UPDATE Applications
             SET company=?1, role=?2, status=?3, submit_date=?4
@@ -119,7 +119,10 @@ impl AppDB {
     }
 
     pub fn get_interviews(&self) -> Result<Vec<Interview>> {
-        let mut stmt = self.connection.prepare("SELECT * FROM Interviews")?;
+        let mut stmt = self.connection.prepare(
+            "SELECT i.id, a.id, a.company, a.role, i.interview_date, i.interview_type, i.notes
+            FROM Interviews AS i JOIN Applications AS a ON a.id = i.application_id",
+        )?;
 
         let tmp = stmt.query_map([], |row| Ok(Interview::from_row(row)?))?;
 
@@ -136,7 +139,7 @@ impl AppDB {
         Ok(tmp.map(|q| q.unwrap()).collect())
     }
 
-    pub fn add_interview(&self, item: Interview) -> Result<()> {
+    pub fn add_interview(&self, item: NewInterview) -> Result<()> {
         item.add_row(&self.connection)?;
 
         Ok(())
@@ -164,14 +167,17 @@ impl AppDB {
     }
 
     pub fn get_offers(&self) -> Result<Vec<Offer>> {
-        let mut stmt = self.connection.prepare("SELECT * FROM Offers")?;
+        let mut stmt = self.connection.prepare(
+            "SELECT o.id, a.id, a.company, a.role, o.base_salary, o.bonus, o.equity_details, o.expiration_date, o.is_accepted
+            FROM Offers AS o JOIN Applications AS a ON a.id = o.application_id",
+        )?;
 
         let tmp = stmt.query_map([], |row| Ok(Offer::from_row(row)?))?;
 
         Ok(tmp.map(|q| q.unwrap()).collect())
     }
 
-    pub fn add_offer(&self, item: Offer) -> Result<()> {
+    pub fn add_offer(&self, item: NewOffer) -> Result<()> {
         item.add_row(&self.connection)?;
 
         Ok(())

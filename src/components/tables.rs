@@ -26,11 +26,7 @@ pub fn AppsTable(table: WriteSignal<Vec<Application>>) -> Element {
                 tbody {
                     for item in table.iter() {
                         tr {
-                            if let Some(id) = item.id {
-                                td { "{id}" }
-                            } else {
-                                td { "--" }
-                            }
+                            td { "{item.id}" }
                             td { "{item.company}" }
                             td { "{item.role}" }
                             td { "{item.submit_date}" }
