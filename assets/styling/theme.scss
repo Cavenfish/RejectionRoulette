@@ -1,31 +1,54 @@
-// $themes: (
-//   "default": (
-//     "primary-bg": #271227,
-//     "secondary-bg": #a849a8,
-//     "tertiary-bg": #a849a8,
-//     "primary-fg": #ffffff,
-//     "secondary-fg": #77c3c9,
-//     "tertiary-fg": #77c3c9,
-//     "link-color": #7fdde4,
-//   ),
-// );
+// Font Stack & Sizes
+$font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+$font-size-base: 10pt; // Standard for desktop apps
+$font-size-sm: 0.875rem;
+$font-size-lg: 1.25rem;
+$font-size-h1: 1.8rem;
 
-// Colors
-$primary-bg: #271227;
-$secondary-bg: #a849a8;
-$tertiary-bg: #a849a8;
-$primary-fg: #ffffff;
-$secondary-fg: #77c3c9;
-$tertiary-fg: #77c3c9;
-$link-color: #7fdde4;
+// Define the Theme Palette
+// We use CSS variables for colors so they can be swapped dynamically
+:root {
+  // Dark Theme (Default)
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-accent: #2d2d2d;
+  
+  --fg-primary: #e0e0e0;
+  --fg-secondary: #b0b0b0;
+  --fg-muted: #666666;
 
-// Font
-$font-stack: Helvetica, Arial, sans-serif;
-$xlarge-font: 24px;
-$large-font: 22px;
-$normal-font: 20px;
-$medium-font: 17px;
-$small-font: 14px;
+  --accent-color: #3d5afe;
+  --success: #4caf50;
+  --error: #f44336;
+  --warning: #ff9800;
+}
 
-// Etc.
-$link-decoration: none;
+// Light Theme Override
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-accent: #eeeeee;
+  
+  --fg-primary: #212121;
+  --fg-secondary: #424242;
+  --fg-muted: #9e9e9e;
+
+  --accent-color: #2979ff;
+  --success: #2e7d32;
+  --error: #d32f2f;
+  --warning: #ed6c02;
+}
+
+// SCSS Variable Aliases for @use consumption
+$primary-bg: var(--bg-primary);
+$secondary-bg: var(--bg-secondary);
+$accent-bg: var(--bg-accent);
+
+$primary-fg: var(--fg-primary);
+$secondary-fg: var(--fg-secondary);
+$muted-fg: var(--fg-muted);
+
+$accent: var(--accent-color);
+$status-success: var(--success);
+$status-error: var(--error);
+$status-warning: var(--warning);

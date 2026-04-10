@@ -1,27 +1,105 @@
 @use "theme";
 
-.table-title {
-    color: theme.$secondary-fg;
+.table-header {
+    display: flex;
+    justify-content: space-between; // This pushes title to left and button to right
+    align-items: center;           // Vertically centers them
+    margin-bottom: 20px;           // Space between header and table
+    padding: 0 5px;
+
+    h2 {
+        margin: 0;
+        color: theme.$primary-fg;
+        font-size: theme.$font-size-h1;
+        font-weight: 600;
+    }
+
+    .new-item {
+        button {
+            // Sizing and Shape
+            padding: 8px 16px;     // Better than fixed width/height for text
+            min-width: 80px;
+            border-radius: 6px;
+            border: 1px solid theme.$accent-bg;
+            
+            // Colors
+            color: theme.$primary-fg;
+            background-color: theme.$secondary-bg;
+            
+            // Typography
+            font-size: theme.$font-size-sm;
+            font-weight: 500;
+            cursor: pointer;
+            
+            // Animation
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: theme.$accent-bg;
+                border-color: theme.$accent; // Highlight border on hover
+                transform: translateY(-1px); // Subtle lift
+            }
+
+            &:active {
+                transform: translateY(0); // Press effect
+                background-color: theme.$accent-bg;
+            }
+        }
+    }
 }
 
 .apps-table {
+    width: 100%;
+    overflow-x: auto; // Ensures responsiveness if columns overflow
+    background-color: theme.$primary-bg;
+    border-radius: 8px;
+    border: 1px solid theme.$accent-bg;
+
     table {
         width: 100%;
+        border-collapse: collapse; // Removes default gaps between cells
         table-layout: fixed;
-
+        font-family: theme.$font-family;
+        
         thead {
             background-color: theme.$secondary-bg;
-            color: theme.$secondary-fg;
-            padding: 20px 15px;
-            font-weight: 500;
+            
+            th {
+                color: theme.$secondary-fg;
+                padding: 12px 15px;
+                font-weight: 600;
+                font-size: theme.$font-size-sm;
+                text-align: left; // Left-aligned headers usually look cleaner
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                border-bottom: 2px solid theme.$accent-bg;
+            }
         }
 
         tbody {
-            padding: 15px;
-            font-weight: 300;
-            text-align: center;
-            border: 1px;
-            border-bottom: solid 1px theme.$tertiary-bg;
+            tr {
+                border-bottom: 1px solid theme.$accent-bg;
+                transition: background-color 0.2s ease; // Smooth hover transition
+                cursor: pointer;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                &:hover {
+                    background-color: theme.$accent-bg;
+                }
+            }
+
+            td {
+                padding: 14px 15px;
+                color: theme.$primary-fg;
+                font-weight: 400;
+                font-size: theme.$font-size-base;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis; // Prevents long text from breaking layout
+            }
         }
     }
 }

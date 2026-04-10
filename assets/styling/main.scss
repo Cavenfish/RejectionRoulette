@@ -1,10 +1,11 @@
 @use "theme";
 @use "table";
+@use "modal";
 
 body {
     background-color: theme.$primary-bg;
     color: theme.$primary-fg;
-    font-family: theme.$font-stack;
+    font-family: theme.$font-family;
 }
 
 form {

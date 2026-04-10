@@ -3,3 +3,6 @@ pub use add_application::EntryForm;
 
 mod tables;
 pub use tables::{ApplicationsTable, InterviewsTable};
+
+mod modal_overlay;
+pub use modal_overlay::ModalOverlay;

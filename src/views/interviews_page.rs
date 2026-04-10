@@ -10,7 +10,6 @@ pub fn InterviewsPage() -> Element {
     let table = use_signal(|| db.get_interviews().unwrap());
 
     rsx! {
-        h1 { "Job Application Tracker" }
         InterviewsTable { table }
     }
 }

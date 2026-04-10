@@ -44,7 +44,7 @@ impl RowInsert for NewApplication {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Application {
     pub id: i64,
     pub company: String,

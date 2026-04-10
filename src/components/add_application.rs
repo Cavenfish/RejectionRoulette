@@ -11,28 +11,26 @@ pub struct JobApplication {
 }
 
 #[component]
-pub fn EntryForm(mut table: WriteSignal<Vec<Application>>) -> Element {
+pub fn EntryForm() -> Element {
     rsx! {
         h3 { "Add new job application" }
         form {
             onsubmit: move |evt: FormEvent| async move {
-
-                let values: JobApplication = evt.parsed_values().unwrap();
-
+                // let values: JobApplication = evt.parsed_values().unwrap();
             },
             label { "Company" }
-            input { r#type: "text", id: "company", name: "company" }
+            input { r#type: "text", placeholder: "e.g. Google" }
             br {  }
 
             label { "Role" }
-            input { r#type: "text", id: "role", name: "role" }
+            input { r#type: "text", placeholder: "e.g. Software Engineer, Backend" }
             br {  }
 
             label { "Date" }
-            input { r#type: "text", id: "date", name: "date" }
+            input { r#type: "text", placeholder: "e.g. 2026/04/10" }
             br {  }
 
             button { "Submit" }
-         }
+        }
     }
 }
