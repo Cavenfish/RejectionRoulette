@@ -13,24 +13,37 @@ pub struct JobApplication {
 #[component]
 pub fn EntryForm() -> Element {
     rsx! {
-        h3 { "Add new job application" }
-        form {
-            onsubmit: move |evt: FormEvent| async move {
-                // let values: JobApplication = evt.parsed_values().unwrap();
-            },
-            label { "Company" }
-            input { r#type: "text", placeholder: "e.g. Google" }
-            br {  }
+        div {
+            class: "new-entry-form",
+            h3 { "Add new job application" }
+            form {
+                onsubmit: move |evt: FormEvent| async move {
+                    // let values: JobApplication = evt.parsed_values().unwrap();
+                },
 
-            label { "Role" }
-            input { r#type: "text", placeholder: "e.g. Software Engineer, Backend" }
-            br {  }
+                div {
+                    class: "form-group",
+                    label { "Company" }
+                    input { r#type: "text", placeholder: "e.g. Google" }
+                }
 
-            label { "Date" }
-            input { r#type: "text", placeholder: "e.g. 2026/04/10" }
-            br {  }
+                div {
+                    class: "form-group",
+                    label { "Role" }
+                    input { r#type: "text", placeholder: "e.g. Software Engineer, Backend" }
+                }
 
-            button { "Submit" }
+                div {
+                    class: "form-group",
+                    label { "Date" }
+                    input { r#type: "text", placeholder: "e.g. 2026/04/10" }
+                }
+
+                div {
+                    class: "form-actions",
+                    button { "Submit" }
+                }
+            }
         }
     }
 }

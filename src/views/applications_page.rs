@@ -13,7 +13,7 @@ pub fn ApplicationsPage() -> Element {
     rsx! {
         div {
             class: "table-header",
-            h3 { "Applications" }
+            h2 { "Applications" }
 
             div {
                 class: "new-item",
