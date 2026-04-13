@@ -128,52 +128,57 @@ pub fn EditPopup(props: EditProps) -> Element {
                 class: "modal-content",
                 onclick: |evt| evt.stop_propagation(), // Prevent closing when clicking inside
 
-                h2 { "Edit Application" }
-
-                label { "Company" }
-                input {
-                    r#type: "text",
-                    value: "{company}",
-                    placeholder: "Hello Company",
-                    oninput: move |e| company.set(e.value())
-                }
-
-                label { "Role" }
-                input {
-                    "value": "{role}",
-                    oninput: move |e| role.set(e.value())
-                }
-
-                label { "Status" }
-                select {
-                    value: "{status}",
-                    onchange: move |e| status.set(e.value()),
-                    option { "Ghost" }
-                    option { "Rejected" }
-                    option { "Interview" }
-                    option { "Pending" }
-                }
-
                 div {
-                    style: "margin-top: 20px; display: flex; justify-content: space-between;",
-                    button {
-                        style: "background: #ff5555; color: white;",
-                        onclick: move |_| {
-                            // db.delete(props.item.id);
-                            println!("Delete ID: {}", props.item.id);
-                            props.on_close.call(());
-                        },
-                        "Delete"
-                    }
-                    div {
-                        button {
-                            style: "background: #44aa44; color: white; margin-left: 10px;",
-                            onclick: move |_| {
-                                // db.update(props.item.id, company(), role(), status());
-                                println!("Update ID: {}", props.item.id);
-                                props.on_close.call(());
-                            },
-                            "Update"
+                    class: "new-entry-form",
+                    h2 { "Edit Application" }
+
+                    form {
+                        label { "Company" }
+                        input {
+                            r#type: "text",
+                            value: "{company}",
+                            oninput: move |e| company.set(e.value())
+                        }
+
+                        label { "Role" }
+                        input {
+                            r#type: "text",
+                            value: "{role}",
+                            oninput: move |e| role.set(e.value())
+                        }
+
+                        label { "Status" }
+                        select {
+                            value: "{status}",
+                            onchange: move |e| status.set(e.value()),
+                            option { "Ghost" }
+                            option { "Rejected" }
+                            option { "Interview" }
+                            option { "Pending" }
+                        }
+
+                        div {
+                            class: "form-actions",
+                            button {
+                                style: "background: #ff5555; justify: left;",
+                                onclick: move |_| {
+                                    // db.delete(props.item.id);
+                                    println!("Delete ID: {}", props.item.id);
+                                    props.on_close.call(());
+                                },
+                                "Delete"
+                            }
+                            div {
+                                button {
+                                    // style: "background: #44aa44; color: white; margin-left: 10px;",
+                                    onclick: move |_| {
+                                        // db.update(props.item.id, company(), role(), status());
+                                        println!("Update ID: {}", props.item.id);
+                                        props.on_close.call(());
+                                    },
+                                    "Update"
+                                }
+                            }
                         }
                     }
                 }

@@ -8,7 +8,7 @@ pub fn ApplicationsPage() -> Element {
     let db = AppDB::new();
 
     let mut new_entry_flag = use_signal(|| false);
-    let table = use_signal(|| db.get_applications().unwrap());
+    let mut table = use_signal(|| db.get_applications().unwrap());
 
     rsx! {
         div {
@@ -26,7 +26,7 @@ pub fn ApplicationsPage() -> Element {
         if new_entry_flag() {
             ModalOverlay {
                 on_close: move |_| new_entry_flag.set(false),
-                inner: EntryForm()
+                inner: rsx!{EntryForm {table, on_submit: move |_| new_entry_flag.set(false)}}
             }
         }
         ApplicationsTable { table }

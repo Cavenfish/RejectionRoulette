@@ -2,6 +2,7 @@ use anyhow::Result;
 use backend::database::{
     AppDB, Application, Interview, NewApplication, NewInterview, NewOffer, Offer,
 };
+use chrono::Local;
 use colored::Colorize;
 
 use crate::args::{AddCommand, AddSubcommand, ShowArgs};
@@ -32,11 +33,23 @@ pub fn add(cmd: AddCommand) -> Result<()> {
                 "Pending".to_string()
             };
 
+            let submit_date = match cmds.date.as_str() {
+                // Handle default value
+                "today" => {
+                    let tmp = Local::now();
+
+                    tmp.format("%Y/%m/%d").to_string()
+                }
+
+                // Handle user input
+                _ => cmds.date,
+            };
+
             let app = NewApplication {
                 company: cmds.company,
                 role: cmds.role,
                 status,
-                submit_date: cmds.date,
+                submit_date,
             };
 
             db.add_application(app)

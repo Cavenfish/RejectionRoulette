@@ -1,5 +1,4 @@
 use anyhow::Result;
-use chrono::Local;
 use rusqlite::{Connection, Row, params};
 
 pub trait RowRead: Sized {
@@ -20,24 +19,12 @@ pub struct NewApplication {
 
 impl RowInsert for NewApplication {
     fn add_row(&self, conn: &Connection) -> Result<()> {
-        let date = match self.submit_date.as_str() {
-            // Handle default value
-            "today" => {
-                let tmp = Local::now();
-
-                &tmp.format("%Y/%m/%d").to_string()
-            }
-
-            // Handle user input
-            _ => &self.submit_date,
-        };
-
         conn.execute(
             "INSERT INTO Applications (
             company, role, status, submit_date) VALUES (
             ?1, ?2, ?3, ?4)
             ",
-            params![self.company, self.role, self.status, date],
+            params![self.company, self.role, self.status, self.submit_date],
         )?;
 
         Ok(())
