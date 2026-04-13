@@ -1,11 +1,7 @@
-use std::collections::HashMap;
-
 use backend::database::{AppDB, Application, NewApplication};
 use chrono::Local;
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
-
-use crate::Route;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JobApplication {

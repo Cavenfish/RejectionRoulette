@@ -1,7 +1,4 @@
-use backend::{
-    database::{AppDB, Application},
-    plots::{stats_pie, stats_sankey},
-};
+use backend::{database::AppDB, plots::stats_sankey};
 use dioxus::prelude::*;
 
 #[component]

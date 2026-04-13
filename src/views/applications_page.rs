@@ -8,7 +8,7 @@ pub fn ApplicationsPage() -> Element {
     let db = AppDB::new();
 
     let mut new_entry_flag = use_signal(|| false);
-    let mut table = use_signal(|| db.get_applications().unwrap());
+    let table = use_signal(|| db.get_applications().unwrap());
 
     rsx! {
         div {
