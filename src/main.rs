@@ -1,3 +1,4 @@
+use dioxus::desktop::{Config, WindowBuilder};
 use dioxus::prelude::*;
 
 mod components;
@@ -34,9 +35,15 @@ enum Route {
 const MAIN_CSS: Asset = asset!("/assets/styling/main.scss");
 
 fn main() {
-    // The `launch` function is the main entry point for a dioxus app. It takes a component and renders it with the platform feature
-    // you have enabled
-    dioxus::launch(App);
+    // Define a custom window configuration
+    let window = WindowBuilder::new()
+        .with_title("Rejection Roulette")
+        .with_resizable(true);
+
+    // Create the configuration, disabling the default menu
+    let cfg = Config::new().with_window(window).with_menu(None); // This hides the "File, Edit..." menu bar
+
+    LaunchBuilder::new().with_cfg(cfg).launch(App);
 }
 
 #[component]
