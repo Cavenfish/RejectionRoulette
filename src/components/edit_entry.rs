@@ -68,36 +68,41 @@ pub fn EditApplication(mut props: EditApplicationProps) -> Element {
 
                 div {
                     class: "form-actions",
-                    button {
-                        style: "background: #ff5555; justify: left;",
-                        onclick: move |_| {
-                            let db = AppDB::new();
-                            db.delete(props.item.id).unwrap();
-                            let updated_table = db.get_applications().unwrap();
-                            props.table.set(updated_table);
-                            props.on_close.call(());
-                        },
-                        "Delete"
+
+                    div {
+                        class: "delete-btn",
+                        button {
+                            onclick: move |_| {
+                                let db = AppDB::new();
+                                db.delete(props.item.id).unwrap();
+                                let updated_table = db.get_applications().unwrap();
+                                props.table.set(updated_table);
+                                props.on_close.call(());
+                            },
+                            "Delete"
+                        }
                     }
 
-                    button {
-                        style: "background: #44aa44;",
-                        onclick: move |_| {
-                            let db = AppDB::new();
+                    div {
+                        class: "submit-btn",
+                        button {
+                            onclick: move |_| {
+                                let db = AppDB::new();
 
-                            let updated = NewApplication {
-                                company: company(),
-                                role: role(),
-                                status: status(),
-                                submit_date: date(),
-                            };
+                                let updated = NewApplication {
+                                    company: company(),
+                                    role: role(),
+                                    status: status(),
+                                    submit_date: date(),
+                                };
 
-                            db.edit_application(updated, props.item.id).unwrap();
-                            let updated_table = db.get_applications().unwrap();
-                            props.table.set(updated_table);
-                            props.on_close.call(());
-                        },
-                        "Update"
+                                db.edit_application(updated, props.item.id).unwrap();
+                                let updated_table = db.get_applications().unwrap();
+                                props.table.set(updated_table);
+                                props.on_close.call(());
+                            },
+                            "Update"
+                        }
                     }
                 }
             }

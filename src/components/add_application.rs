@@ -80,7 +80,10 @@ pub fn EntryForm(mut props: EntryFormProps) -> Element {
 
                 div {
                     class: "form-actions",
-                    button { "Submit" }
+                    div {
+                        class: "submit-btn",
+                        button { "Submit" }
+                    }
                 }
             }
         }
