@@ -71,6 +71,7 @@ pub fn EntryForm(mut props: EntryFormProps) -> Element {
                     label { "Status" }
                     select {
                         name: "status",
+                        value: "Pending",
                         option { "Ghost" }
                         option { "Rejected" }
                         option { "Interview" }
