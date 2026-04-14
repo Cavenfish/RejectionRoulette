@@ -1,21 +1,18 @@
 [application]
+name = "RejectionRoulette"
+asset_dir = "assets"
 
 [web.app]
-
-# HTML title tag content
 title = "RejectionRoulette"
 
-# include `assets` in web platform
 [web.resource]
-
-# Additional CSS style files
-style = []
-
-# Additional JavaScript files
+style = ["assets/styling/main.scss"]
 script = []
 
 [web.resource.dev]
-
-# Javascript code file
-# serve: [dev-server] only
 script = []
+
+[bundle]
+publisher = "Cavenfish"
+identifier = "com.rr"
+icon = ["assets/icons/rr.png"]
