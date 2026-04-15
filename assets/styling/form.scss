@@ -31,6 +31,7 @@
 
     // Target both text inputs and select menus
     input[type="text"],
+    textarea,
     select {
       width: 100%;
       padding: 10px 12px;

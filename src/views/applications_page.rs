@@ -1,7 +1,7 @@
 use backend::database::AppDB;
 use dioxus::prelude::*;
 
-use crate::components::{ApplicationsTable, EntryForm, ModalOverlay};
+use crate::components::{AddApplicationForm, ApplicationsTable, ModalOverlay};
 
 #[component]
 pub fn ApplicationsPage() -> Element {
@@ -26,7 +26,7 @@ pub fn ApplicationsPage() -> Element {
         if new_entry_flag() {
             ModalOverlay {
                 on_close: move |_| new_entry_flag.set(false),
-                inner: rsx!{EntryForm {table, on_submit: move |_| new_entry_flag.set(false)}}
+                inner: rsx!{AddApplicationForm {table, on_submit: move |_| new_entry_flag.set(false)}}
             }
         }
         ApplicationsTable { table }

@@ -1,5 +1,5 @@
-mod add_application;
-pub use add_application::EntryForm;
+mod add_entry;
+pub use add_entry::{AddApplicationForm, AddInterviewForm};
 
 mod tables;
 pub use tables::{ApplicationsTable, InterviewsTable};

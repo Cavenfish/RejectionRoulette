@@ -72,10 +72,6 @@ pub fn ApplicationsTable(table: Signal<Vec<Application>>) -> Element {
 pub fn InterviewsTable(table: WriteSignal<Vec<Interview>>) -> Element {
     rsx! {
         div {
-            class: "table-title",
-            h3 { "Interviews" }
-        }
-        div {
             class: "apps-table",
             table {
                 thead {
