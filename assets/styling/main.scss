@@ -4,19 +4,19 @@
 @use "form";
 
 body {
-    background-color: theme.$primary-bg;
-    color: theme.$primary-fg;
-    font-family: theme.$font-family;
+  background-color: theme.$primary-bg;
+  color: theme.$primary-fg;
+  font-family: theme.$font-family;
 }
 
 button {
-    font-size: theme.$font-size-base;
+  font-size: theme.$font-size-base;
 }
 
 .recent-apps {
-    display: block;
+  display: block;
 }
 
 .stats-pie {
-    display: block;
+  display: block;
 }

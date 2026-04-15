@@ -1,5 +1,7 @@
 // Font Stack & Sizes
-$font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+$font-family:
+  "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+  "Segoe UI Emoji";
 $font-size-base: 10pt; // Standard for desktop apps
 $font-size-sm: 8pt;
 $font-size-lg: 16pt;
@@ -11,7 +13,7 @@ $font-size-lg: 16pt;
   --bg-primary: #121212;
   --bg-secondary: #1e1e1e;
   --bg-accent: #2d2d2d;
-  
+
   --fg-primary: #e0e0e0;
   --fg-secondary: #b0b0b0;
   --fg-muted: #666666;
@@ -27,7 +29,7 @@ $font-size-lg: 16pt;
   --bg-primary: #ffffff;
   --bg-secondary: #f5f5f5;
   --bg-accent: #eeeeee;
-  
+
   --fg-primary: #212121;
   --fg-secondary: #424242;
   --fg-muted: #9e9e9e;
