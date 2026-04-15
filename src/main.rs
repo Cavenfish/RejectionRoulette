@@ -6,6 +6,8 @@ mod views;
 
 use views::{ApplicationsPage, Dashboard, InterviewsPage, Navbar};
 
+const MAIN_CSS: Asset = asset!("/assets/styling/main.scss");
+
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
 /// 
@@ -28,11 +30,6 @@ enum Route {
         #[route("/interviews")]
         InterviewsPage {},
 }
-
-// We can import assets in dioxus with the `asset!` macro. This macro takes a path to an asset relative to the crate root.
-// The macro returns an `Asset` type that will display as the path to the asset in the browser or a local path in desktop bundles.
-// The asset macro also minifies some assets like CSS and JS to make bundled smaller
-const MAIN_CSS: Asset = asset!("/assets/styling/main.scss");
 
 fn main() {
     // Define a custom window configuration

@@ -1,36 +1,64 @@
 use crate::Route;
 use dioxus::prelude::*;
 
-const NAVBAR_CSS: Asset = asset!("/assets/styling/navbar.css");
+const DASHBOARD: &str = include_str!("../../assets/icons/dashboard.svg");
+const APPLICATIONS: &str = include_str!("../../assets/icons/applications.svg");
+const INTERVIEWS: &str = include_str!("../../assets/icons/interviews.svg");
+const OFFERS: &str = include_str!("../../assets/icons/offers.svg");
+const CV: &str = include_str!("../../assets/icons/cv.svg");
+const SETTINGS: &str = include_str!("../../assets/icons/settings.svg");
 
-/// The Navbar component that will be rendered on all pages of our app since every page is under the layout.
-///
-///
-/// This layout component wraps the UI of [Route::Home] and [Route::Blog] in a common navbar. The contents of the Home and Blog
-/// routes will be rendered under the outlet inside this component
 #[component]
 pub fn Navbar() -> Element {
+    let navigator = use_navigator();
     rsx! {
-        document::Link { rel: "stylesheet", href: NAVBAR_CSS }
-
         div {
-            id: "navbar",
-            Link {
-                to: Route::Dashboard {},
-                "Dashboard"
+            class: "app-container",
+
+            div {
+                class: "sidebar",
+
+                div {
+                    class: "nav-top",
+
+                    Link {
+                        to: Route::Dashboard {},
+                        div {
+                            class: "nav-item",
+                            title: "Dashboard",
+                            dangerous_inner_html: DASHBOARD
+                        }
+                    }
+
+                    Link {
+                        to: Route::ApplicationsPage {},
+                        div {
+                            class: "nav-item",
+                            title: "Applications",
+                            dangerous_inner_html: APPLICATIONS
+                        }
+                    }
+
+                    Link {
+                        to: Route::InterviewsPage {},
+                        div {
+                            class: "nav-item",
+                            title: "Interviews",
+                            dangerous_inner_html: INTERVIEWS
+                        }
+                    }
+                }
+
+                div {
+                    class: "nav-bottom",
+
+                }
             }
-            Link {
-                to: Route::ApplicationsPage {},
-                "Applications"
-            }
-            Link {
-                to: Route::InterviewsPage {},
-                "Interviews"
+
+            div {
+                class: "main-content",
+                Outlet::<Route> {}
             }
         }
-
-        // The `Outlet` component is used to render the next component inside the layout. In this case, it will render either
-        // the [`Home`] or [`Blog`] component depending on the current route.
-        Outlet::<Route> {}
     }
 }

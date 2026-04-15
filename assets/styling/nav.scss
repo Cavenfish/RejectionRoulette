@@ -1,0 +1,63 @@
+@use "theme";
+
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: theme.$primary-bg;
+  overflow: hidden; // Prevents the whole app from scrolling
+}
+
+.sidebar {
+  width: 64px; // Compact width for icons
+  background-color: theme.$secondary-bg;
+  border-right: 1px solid theme.$accent-bg;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; // Pushes nav-bottom to the bottom
+  padding: 20px 0;
+  flex-shrink: 0;
+
+  .nav-top,
+  .nav-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .nav-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: theme.$secondary-fg;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: theme.$accent-bg;
+      color: theme.$accent;
+    }
+
+    &.active {
+      background-color: theme.$accent-bg;
+      color: theme.$accent;
+      border: 1px solid theme.$accent;
+    }
+
+    // Sizing for your icons
+    i {
+      font-size: 20px;
+    }
+  }
+}
+
+.main-content {
+  flex-grow: 1; // Takes up all remaining width
+  overflow-y: auto; // Allows the table/dashboard to scroll independently
+  padding: 30px;
+  background-color: theme.$primary-bg;
+}
