@@ -78,7 +78,7 @@ impl RowInsert for NewInterview {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Interview {
     pub id: i64,
     pub application_id: i64,
@@ -133,7 +133,7 @@ impl RowInsert for NewOffer {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Offer {
     pub id: i64,
     pub application_id: i64,

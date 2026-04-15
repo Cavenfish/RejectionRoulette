@@ -93,7 +93,7 @@ pub fn AddApplicationForm(mut props: AddApplicationFormProps) -> Element {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct InterviewData {
-    pub app_id: i64,
+    pub app_id: String,
     pub interview_type: String,
     pub date: String,
     pub notes: String,
@@ -122,7 +122,7 @@ pub fn AddInterviewForm(mut props: AddInterviewFormProps) -> Element {
                     // TODO: Check app_id and date are valid
 
                     let new_interview = NewInterview {
-                        application_id: data.app_id,
+                        application_id: data.app_id.parse().unwrap_or(1),
                         interview_type: data.interview_type,
                         interview_date: data.date,
                         notes: data.notes,

@@ -145,6 +145,13 @@ impl AppDB {
         Ok(())
     }
 
+    pub fn delete_interview(&self, id: i64) -> Result<()> {
+        self.connection
+            .execute("DELETE FROM Interviews WHERE id=?1", params![id])?;
+
+        Ok(())
+    }
+
     pub fn update_interview(&self, id: i64, notes: String) -> Result<()> {
         self.connection.execute(
             "UPDATE Interviews SET notes=?1 WHERE id=?2",
@@ -154,13 +161,19 @@ impl AppDB {
         Ok(())
     }
 
-    pub fn edit_interview(&self, item: Interview, id: i64) -> Result<()> {
+    pub fn edit_interview(&self, item: NewInterview, id: i64) -> Result<()> {
         self.connection.execute(
             "UPDATE Interviews
-            SET interview_date=?1, interview_type=?2, notes=?3
-            WHERE id=?4
+            SET application_id=?1, interview_date=?2, interview_type=?3, notes=?4
+            WHERE id=?5
             ",
-            params![item.interview_date, item.interview_type, item.notes, id],
+            params![
+                item.application_id,
+                item.interview_date,
+                item.interview_type,
+                item.notes,
+                id
+            ],
         )?;
 
         Ok(())
