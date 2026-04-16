@@ -60,6 +60,14 @@ pub fn Navbar() -> Element {
                 div {
                     class: "nav-bottom",
 
+                    Link {
+                        to: Route::SettingsPage {},
+                        div {
+                            class: "nav-item",
+                            title: "Settings",
+                            dangerous_inner_html: SETTINGS
+                        }
+                    }
                 }
             }
 

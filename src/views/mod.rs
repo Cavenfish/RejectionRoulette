@@ -22,3 +22,6 @@ pub use interviews_page::InterviewsPage;
 
 mod offers_page;
 pub use offers_page::OffersPage;
+
+mod settings_page;
+pub use settings_page::SettingsPage;

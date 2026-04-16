@@ -4,6 +4,7 @@
 @use "form";
 @use "nav";
 @use "dashboard";
+@use "settings";
 
 body {
   background-color: theme.$primary-bg;
