@@ -55,6 +55,15 @@ pub fn Navbar() -> Element {
                             dangerous_inner_html: OFFERS
                         }
                     }
+
+                    Link {
+                        to: Route::ResumesPage {},
+                        div {
+                            class: "nav-item",
+                            title: "Resumes",
+                            dangerous_inner_html: CV
+                        }
+                    }
                 }
 
                 div {

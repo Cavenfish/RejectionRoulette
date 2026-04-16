@@ -1,0 +1,120 @@
+@use "theme";
+
+.resume-page {
+  display: flex;
+  height: 100%;
+  gap: 20px;
+  padding: 20px;
+
+  // Left Column: The Library
+  .resume-library {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 300px;
+
+    .library-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h2 {
+        color: theme.$primary-fg;
+        margin: 0;
+      }
+    }
+  }
+
+  // The Grid of "File Cards"
+  .resume-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    overflow-y: auto;
+  }
+
+  .resume-card {
+    background: theme.$secondary-bg;
+    border: 1px solid theme.$accent-bg;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: theme.$accent;
+      transform: translateY(-2px);
+    }
+
+    &.active {
+      background: theme.$accent-bg;
+      border-color: theme.$accent;
+      box-shadow: 0 0 0 1px theme.$accent;
+    }
+
+    svg {
+      width: 40px;
+      height: 40px;
+      color: theme.$accent;
+    }
+
+    span {
+      font-size: 0.85rem;
+      color: theme.$primary-fg;
+      text-align: center;
+      word-break: break-all;
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  // Right Column: The PDF Previewer
+  .resume-preview {
+    flex: 1.5;
+    background: theme.$secondary-bg;
+    border: 1px solid theme.$accent-bg;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .preview-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid theme.$accent-bg;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: theme.$accent-bg;
+
+      h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: theme.$primary-fg;
+      }
+    }
+
+    .pdf-frame {
+      flex-grow: 1;
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .no-selection {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: theme.$secondary-fg;
+      font-style: italic;
+    }
+  }
+}

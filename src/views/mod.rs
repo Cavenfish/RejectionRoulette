@@ -25,3 +25,6 @@ pub use offers_page::OffersPage;
 
 mod settings_page;
 pub use settings_page::SettingsPage;
+
+mod resumes_page;
+pub use resumes_page::ResumesPage;

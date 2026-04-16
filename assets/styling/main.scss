@@ -5,6 +5,7 @@
 @use "nav";
 @use "dashboard";
 @use "settings";
+@use "resumes";
 
 body {
   background-color: theme.$primary-bg;

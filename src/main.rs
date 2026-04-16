@@ -4,7 +4,9 @@ use dioxus::prelude::*;
 mod components;
 mod views;
 
-use views::{ApplicationsPage, Dashboard, InterviewsPage, Navbar, OffersPage, SettingsPage};
+use views::{
+    ApplicationsPage, Dashboard, InterviewsPage, Navbar, OffersPage, ResumesPage, SettingsPage,
+};
 
 const MAIN_CSS: Asset = asset!("/assets/styling/main.scss");
 
@@ -32,6 +34,9 @@ enum Route {
 
         #[route("/offers")]
         OffersPage {},
+
+        #[route("/resumes")]
+        ResumesPage {},
 
         #[route("/settings")]
         SettingsPage {}
