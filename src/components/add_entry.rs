@@ -6,9 +6,10 @@ use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct JobApplication {
+pub struct JobData {
     pub company: String,
     pub role: String,
+    pub location: String,
     pub date: String,
     pub status: String,
 }
@@ -30,13 +31,15 @@ pub fn AddApplicationForm(mut props: AddApplicationFormProps) -> Element {
             form {
                 onsubmit: move |evt: FormEvent| async move {
                     let db = AppDB::new();
-                    let data: JobApplication = evt.parsed_values().unwrap();
+                    let data: JobData = evt.parsed_values().unwrap();
 
                     // TODO: Check date is valid
 
                     let new_app = NewApplication {
+                        resume_id: None,
                         company: data.company,
                         role: data.role,
+                        location: data.location,
                         status: data.status,
                         submit_date: data.date
                     };
@@ -60,6 +63,12 @@ pub fn AddApplicationForm(mut props: AddApplicationFormProps) -> Element {
                     class: "form-group",
                     label { "Role" }
                     input { r#type: "text", name: "role", placeholder: "e.g. Software Engineer, Backend" }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Location" }
+                    input { r#type: "text", name: "location", placeholder: "e.g. Los Angeles, CA" }
                 }
 
                 div {

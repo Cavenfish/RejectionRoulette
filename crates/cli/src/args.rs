@@ -55,6 +55,10 @@ pub struct AddApplicationArgs {
     #[arg(short)]
     pub role: String,
 
+    // Location
+    #[arg(short)]
+    pub location: String,
+
     /// Application already rejected
     #[arg(long, action)]
     pub rejected: bool,
@@ -141,6 +145,10 @@ pub struct EditArgs {
     /// Role
     #[arg(short)]
     pub role: String,
+
+    /// Location
+    #[arg(short)]
+    pub location: String,
 
     /// Status
     #[arg(short)]

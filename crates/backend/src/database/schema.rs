@@ -1,5 +1,8 @@
+use std::{fs, path::PathBuf};
+
 use anyhow::Result;
 use rusqlite::{Connection, Row, params};
+use sha2::{Digest, Sha256};
 
 pub trait RowRead: Sized {
     fn from_row(row: &Row) -> rusqlite::Result<Self>;
@@ -11,8 +14,10 @@ pub trait RowInsert {
 
 #[derive(Debug, Clone)]
 pub struct NewApplication {
+    pub resume_id: Option<i64>,
     pub company: String,
     pub role: String,
+    pub location: String,
     pub status: String,
     pub submit_date: String,
 }
@@ -20,11 +25,18 @@ pub struct NewApplication {
 impl RowInsert for NewApplication {
     fn add_row(&self, conn: &Connection) -> Result<()> {
         conn.execute(
-            "INSERT INTO Applications (
-            company, role, status, submit_date) VALUES (
-            ?1, ?2, ?3, ?4)
+            "INSERT INTO Applications 
+            (resume_id, company, role, location, status, submit_date) 
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6)
             ",
-            params![self.company, self.role, self.status, self.submit_date],
+            params![
+                self.resume_id,
+                self.company,
+                self.role,
+                self.location,
+                self.status,
+                self.submit_date
+            ],
         )?;
 
         Ok(())
@@ -34,8 +46,10 @@ impl RowInsert for NewApplication {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Application {
     pub id: i64,
+    pub resume_id: Option<i64>,
     pub company: String,
     pub role: String,
+    pub location: String,
     pub status: String,
     pub submit_date: String,
 }
@@ -44,10 +58,12 @@ impl RowRead for Application {
     fn from_row(row: &Row) -> rusqlite::Result<Self> {
         Ok(Self {
             id: row.get(0)?,
-            company: row.get(1)?,
-            role: row.get(2)?,
-            status: row.get(3)?,
-            submit_date: row.get(4)?,
+            resume_id: row.get(1)?,
+            company: row.get(2)?,
+            role: row.get(3)?,
+            location: row.get(4)?,
+            status: row.get(5)?,
+            submit_date: row.get(6)?,
         })
     }
 }
@@ -162,6 +178,51 @@ impl RowRead for Offer {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct NewResume {
+    pub file_path: PathBuf,
+    pub name: String,
+}
+
+impl RowInsert for NewResume {
+    fn add_row(&self, conn: &Connection) -> Result<()> {
+        let bytes = fs::read(&self.file_path)?;
+        let hash = String::from_utf8(Sha256::digest(&bytes).to_vec())?;
+        let dest_dir = dirs::data_dir().unwrap().join("RejectionRoulette/Resumes/");
+        let mut dest_path = dest_dir.join(&hash);
+        dest_path.set_extension("pdf");
+
+        conn.execute(
+            "INSERT INTO Resumes (name, hash) VALUES (?1, ?2)",
+            params![self.name, hash],
+        )?;
+
+        // Avoid duplication
+        if !dest_path.exists() {
+            fs::write(dest_path, bytes)?;
+        }
+
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Resume {
+    pub id: i64,
+    pub name: String,
+    pub hash: String,
+}
+
+impl RowRead for Resume {
+    fn from_row(row: &Row) -> rusqlite::Result<Self> {
+        Ok(Self {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            hash: row.get(2)?,
+        })
+    }
+}
+
 pub fn init_db(conn: &Connection) -> Result<()> {
     conn.execute("PRAGMA foreign_keys = ON;", [])?;
     conn.execute("PRAGMA schema_version = 1;", [])?;
@@ -172,10 +233,13 @@ pub fn init_db(conn: &Connection) -> Result<()> {
         -- Parent Table
         CREATE TABLE IF NOT EXISTS Applications (
             id          INTEGER PRIMARY KEY,
-            company     TEXT NOT NULL,
-            role        TEXT NOT NULL,
+            resume_id   INTEGER,
+            company     TEXT,
+            role        TEXT,
+            location    TEXT,
             status      TEXT NOT NULL,
-            submit_date DATETIME
+            submit_date DATETIME,
+            FOREIGN KEY (resume_id) REFERENCES Resumes (id)
         );
 
         -- Child Table: Interviews
@@ -198,6 +262,13 @@ pub fn init_db(conn: &Connection) -> Result<()> {
             expiration_date DATETIME,
             is_accepted     BOOLEAN,
             FOREIGN KEY (application_id) REFERENCES Applications (id) ON DELETE CASCADE
+        );
+
+        -- Resume Tracking Table
+        CREATE TABLE IF NOT EXISTS Resumes (
+            id   INTEGER PRIMARY KEY,
+            name TEXT UNIQUE,
+            hash TEXT NOT NULL
         );
 
         COMMIT;

@@ -1,23 +1,18 @@
-use std::{collections::BTreeMap, fs};
+use std::{collections::BTreeMap, fs, path::PathBuf};
 
 use anyhow::Result;
 use chrono::{Local, NaiveDate};
 use dirs::data_dir;
 use rusqlite::{Connection, params};
 
-use crate::database::schema::{NewApplication, NewInterview, NewOffer};
+use crate::database::schema::{NewApplication, NewInterview, NewOffer, NewResume};
 
 use super::schema::{Application, Interview, Offer, RowInsert, RowRead, init_db};
-
-//TODO
-// make funcs:
-//  - search apps
-//  - search interviews
-//
 
 #[derive(Debug)]
 pub struct AppDB {
     connection: Connection,
+    resume_dir: PathBuf,
 }
 
 impl AppDB {
@@ -29,11 +24,20 @@ impl AppDB {
             fs::create_dir_all(&save_dir).expect("Failed to create data dir");
         }
 
+        let resume_dir = save_dir.join("Resumes");
+
+        if !resume_dir.exists() {
+            fs::create_dir_all(&resume_dir).expect("Failed to create resume dir");
+        }
+
         let connection = Connection::open(&filename).unwrap();
 
         init_db(&connection).expect("Failed to init db");
 
-        Self { connection }
+        Self {
+            connection,
+            resume_dir,
+        }
     }
 
     pub fn scan_for_ghosts(&self) -> Result<()> {
@@ -109,10 +113,17 @@ impl AppDB {
     pub fn edit_application(&self, item: NewApplication, id: i64) -> Result<()> {
         self.connection.execute(
             "UPDATE Applications
-            SET company=?1, role=?2, status=?3, submit_date=?4
-            WHERE id=?5
+            SET company=?1, role=?2, location=?3, status=?4, submit_date=?5
+            WHERE id=?6
             ",
-            params![item.company, item.role, item.status, item.submit_date, id],
+            params![
+                item.company,
+                item.role,
+                item.location,
+                item.status,
+                item.submit_date,
+                id
+            ],
         )?;
 
         Ok(())
@@ -221,5 +232,24 @@ impl AppDB {
         )?;
 
         Ok(())
+    }
+
+    pub fn add_resume(&self, resume: NewResume) -> Result<()> {
+        resume.add_row(&self.connection)?;
+
+        Ok(())
+    }
+
+    pub fn get_resume(&self, name: String) -> Result<PathBuf> {
+        let hash: String = self.connection.query_row(
+            "SELECT hash FROM Resumes WHERE name=?1",
+            params![name],
+            |row| row.get(0),
+        )?;
+
+        let mut file_path = self.resume_dir.join(&hash);
+        file_path.set_extension("pdf");
+
+        Ok(file_path)
     }
 }

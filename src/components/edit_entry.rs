@@ -13,8 +13,10 @@ pub struct EditApplicationProps {
 #[component]
 pub fn EditApplication(mut props: EditApplicationProps) -> Element {
     // Local state for the form inputs
+    let mut resume = use_signal(|| props.item.resume_id.clone());
     let mut company = use_signal(|| props.item.company.clone());
     let mut role = use_signal(|| props.item.role.clone());
+    let mut location = use_signal(|| props.item.location.clone());
     let mut status = use_signal(|| props.item.status.clone());
     let mut date = use_signal(|| props.item.submit_date.clone());
 
@@ -42,6 +44,16 @@ pub fn EditApplication(mut props: EditApplicationProps) -> Element {
                         r#type: "text",
                         value: "{role}",
                         oninput: move |e| role.set(e.value())
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Location" }
+                    input {
+                        r#type: "text",
+                        value: "{location}",
+                        oninput: move |e| location.set(e.value())
                     }
                 }
 
@@ -94,8 +106,10 @@ pub fn EditApplication(mut props: EditApplicationProps) -> Element {
                                 // TODO: Check date is valid
 
                                 let updated = NewApplication {
+                                    resume_id: resume(),
                                     company: company(),
                                     role: role(),
+                                    location: location(),
                                     status: status(),
                                     submit_date: date(),
                                 };

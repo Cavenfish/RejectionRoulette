@@ -46,8 +46,10 @@ pub fn add(cmd: AddCommand) -> Result<()> {
             };
 
             let app = NewApplication {
+                resume_id: None,
                 company: cmds.company,
                 role: cmds.role,
+                location: cmds.location,
                 status,
                 submit_date,
             };
@@ -95,8 +97,10 @@ pub fn edit(cmds: EditArgs) -> Result<()> {
     let db = AppDB::new();
 
     let app = NewApplication {
+        resume_id: None,
         company: cmds.company,
         role: cmds.role,
+        location: cmds.location,
         status: cmds.status,
         submit_date: cmds.date,
     };
