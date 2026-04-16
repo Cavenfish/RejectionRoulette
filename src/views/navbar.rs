@@ -10,7 +10,6 @@ const SETTINGS: &str = include_str!("../../assets/icons/settings.svg");
 
 #[component]
 pub fn Navbar() -> Element {
-    let navigator = use_navigator();
     rsx! {
         div {
             class: "app-container",
@@ -45,6 +44,15 @@ pub fn Navbar() -> Element {
                             class: "nav-item",
                             title: "Interviews",
                             dangerous_inner_html: INTERVIEWS
+                        }
+                    }
+
+                    Link {
+                        to: Route::OffersPage {},
+                        div {
+                            class: "nav-item",
+                            title: "Offers",
+                            dangerous_inner_html: OFFERS
                         }
                     }
                 }

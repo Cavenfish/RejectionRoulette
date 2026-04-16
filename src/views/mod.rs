@@ -19,3 +19,6 @@ pub use applications_page::ApplicationsPage;
 
 mod interviews_page;
 pub use interviews_page::InterviewsPage;
+
+mod offers_page;
+pub use offers_page::OffersPage;

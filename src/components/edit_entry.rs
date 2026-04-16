@@ -1,4 +1,6 @@
-use backend::database::{AppDB, Application, Interview, NewApplication, NewInterview};
+use backend::database::{
+    AppDB, Application, Interview, NewApplication, NewInterview, NewOffer, Offer,
+};
 use dioxus::prelude::*;
 
 #[derive(Props, Clone, PartialEq)]
@@ -207,6 +209,137 @@ pub fn EditInterview(mut props: EditInterviewProps) -> Element {
 
                                 db.edit_interview(updated, props.item.id).unwrap();
                                 let updated_table = db.get_interviews().unwrap();
+                                props.table.set(updated_table);
+                                props.on_close.call(());
+                            },
+                            "Update"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[derive(Props, Clone, PartialEq)]
+pub struct EditOfferProps {
+    item: Offer,
+    table: Signal<Vec<Offer>>,
+    on_close: EventHandler<()>,
+}
+
+#[component]
+pub fn EditOffer(mut props: EditOfferProps) -> Element {
+    let mut application_id = use_signal(|| props.item.application_id.clone());
+    let mut base_salary = use_signal(|| props.item.base_salary.clone());
+    let mut bonus = use_signal(|| props.item.bonus.clone());
+    let mut equity_details = use_signal(|| props.item.equity_details.clone());
+    let mut expiration_date = use_signal(|| props.item.expiration_date.clone());
+    let mut is_accepted = use_signal(|| props.item.is_accepted.clone());
+
+    rsx! {
+        div {
+            class: "new-entry-form",
+            h3 { "Edit Offer" }
+
+            form {
+                div {
+                    class: "form-group",
+                    label { "Application ID" }
+                    input {
+                        r#type: "text",
+                        value: "{application_id}",
+                        oninput: move |e| application_id.set(e.value().parse().unwrap_or(0))
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Base Salary" }
+                    input {
+                        r#type: "text",
+                        value: "{base_salary}",
+                        oninput: move |e| base_salary.set(e.value().parse().unwrap_or(0))
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Bonus" }
+                    input {
+                        r#type: "text",
+                        value: "{bonus}",
+                        oninput: move |e| bonus.set(e.value().parse().unwrap_or(0))
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Equity Details" }
+                    textarea {
+                        name: "equity_details",
+                        wrap: "soft",
+                        value: "{equity_details}",
+                        oninput: move |e| equity_details.set(e.value())
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Expiration Date" }
+                    input {
+                        r#type: "text",
+                        value: "{expiration_date}",
+                        oninput: move |e| expiration_date.set(e.value())
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Is Accepted" }
+                    input {
+                        r#type: "checkbox",
+                        checked: "{is_accepted}",
+                        onchange: move |e| is_accepted.set(e.checked())
+                    }
+                }
+
+                div {
+                    class: "form-actions",
+
+                    div {
+                        class: "delete-btn",
+                        button {
+                            onclick: move |_| {
+                                let db = AppDB::new();
+                                db.delete_offer(props.item.id).unwrap();
+                                let updated_table = db.get_offers().unwrap();
+                                props.table.set(updated_table);
+                                props.on_close.call(());
+                            },
+                            "Delete"
+                        }
+                    }
+
+                    div {
+                        class: "submit-btn",
+                        button {
+                            onclick: move |_| {
+                                let db = AppDB::new();
+
+                                // TODO: Check application_id and dates are valid
+
+                                let updated = NewOffer {
+                                    application_id: application_id(),
+                                    base_salary: base_salary(),
+                                    bonus: bonus(),
+                                    equity_details: equity_details(),
+                                    expiration_date: expiration_date(),
+                                    is_accepted: is_accepted(),
+                                };
+
+                                db.edit_offer(updated, props.item.id).unwrap();
+                                let updated_table = db.get_offers().unwrap();
                                 props.table.set(updated_table);
                                 props.on_close.call(());
                             },

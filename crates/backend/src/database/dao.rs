@@ -195,4 +195,31 @@ impl AppDB {
 
         Ok(())
     }
+
+    pub fn delete_offer(&self, id: i64) -> Result<()> {
+        self.connection
+            .execute("DELETE FROM Offers WHERE id=?1", params![id])?;
+
+        Ok(())
+    }
+
+    pub fn edit_offer(&self, item: NewOffer, id: i64) -> Result<()> {
+        self.connection.execute(
+            "UPDATE Offers
+            SET application_id=?1, base_salary=?2, bonus=?3, equity_details=?4, expiration_date=?5, is_accepted=?6
+            WHERE id=?7
+            ",
+            params![
+                item.application_id,
+                item.base_salary,
+                item.bonus,
+                item.equity_details,
+                item.expiration_date,
+                item.is_accepted,
+                id
+            ],
+        )?;
+
+        Ok(())
+    }
 }

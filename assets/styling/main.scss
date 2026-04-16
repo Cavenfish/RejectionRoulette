@@ -3,6 +3,7 @@
 @use "modal";
 @use "form";
 @use "nav";
+@use "dashboard";
 
 body {
   background-color: theme.$primary-bg;
@@ -12,12 +13,4 @@ body {
 
 button {
   font-size: theme.$font-size-base;
-}
-
-.recent-apps {
-  display: block;
-}
-
-.stats-pie {
-  display: block;
 }

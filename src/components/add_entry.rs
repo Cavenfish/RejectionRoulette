@@ -1,4 +1,6 @@
-use backend::database::{AppDB, Application, Interview, NewApplication, NewInterview};
+use backend::database::{
+    AppDB, Application, Interview, NewApplication, NewInterview, NewOffer, Offer,
+};
 use chrono::Local;
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -173,6 +175,127 @@ pub fn AddInterviewForm(mut props: AddInterviewFormProps) -> Element {
                         name: "notes",
                         wrap: "soft",
                         placeholder: "What are your thoughts going into this interview? Update this later to save how you felt it went."
+                    }
+                }
+
+                div {
+                    class: "form-actions",
+                    div {
+                        class: "submit-btn",
+                        button { "Submit" }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct OfferData {
+    pub app_id: String,
+    pub base_salary: String,
+    pub bonus: String,
+    pub equity_details: String,
+    pub expiration_date: String,
+    pub is_accepted: String,
+}
+
+#[derive(Props, Clone, PartialEq)]
+pub struct AddOfferFormProps {
+    table: Signal<Vec<Offer>>,
+    on_submit: EventHandler<()>,
+}
+
+#[component]
+pub fn AddOfferForm(mut props: AddOfferFormProps) -> Element {
+    let today = Local::now().format("%Y/%m/%d").to_string();
+
+    rsx! {
+        div {
+            class: "new-entry-form",
+            h3 { "Add new offer" }
+
+            form {
+                onsubmit: move |evt: FormEvent| async move {
+                    let db = AppDB::new();
+                    let data: OfferData = evt.parsed_values().unwrap();
+
+                    // TODO: Check app_id, salary, bonus, and date are valid
+
+                    let new_offer = NewOffer {
+                        application_id: data.app_id.parse().unwrap_or(1),
+                        base_salary: data.base_salary.parse().unwrap_or(0),
+                        bonus: data.bonus.parse().unwrap_or(0),
+                        equity_details: data.equity_details,
+                        expiration_date: data.expiration_date,
+                        is_accepted: data.is_accepted == "true",
+                    };
+
+                    db.add_offer(new_offer).unwrap();
+
+                    let updated_table = db.get_offers().unwrap();
+                    props.table.set(updated_table);
+                    props.on_submit.call(());
+                },
+
+                div {
+                    class: "form-group",
+                    label { "Application ID" }
+                    input {
+                        r#type: "text",
+                        name: "app_id",
+                        placeholder: "e.g. 1",
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Base Salary" }
+                    input {
+                        r#type: "text",
+                        name: "base_salary",
+                        placeholder: "e.g. 100000",
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Bonus" }
+                    input {
+                        r#type: "text",
+                        name: "bonus",
+                        placeholder: "e.g. 10000",
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Equity Details" }
+                    textarea {
+                        name: "equity_details",
+                        wrap: "soft",
+                        placeholder: "e.g. 0.5% over 4 years",
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Expiration Date" }
+                    input {
+                        r#type: "text",
+                        name: "expiration_date",
+                        placeholder: "e.g. {today}",
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Offer Accepted" }
+                    select {
+                        name: "is_accepted",
+                        value: "false",
+                        option { "false" }
+                        option { "true" }
                     }
                 }
 
