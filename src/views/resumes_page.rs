@@ -1,7 +1,4 @@
-use backend::app_data_dir;
 use backend::database::{AppDB, Resume};
-use dioxus::desktop::use_asset_handler;
-use dioxus::desktop::wry::http::Response;
 use dioxus::prelude::*;
 use open;
 
@@ -9,19 +6,6 @@ use crate::components::{AddResume, ModalOverlay};
 
 #[component]
 pub fn ResumesPage() -> Element {
-    use_asset_handler("resumes", |request, response| {
-        let resume_dir = app_data_dir().join("Resumes");
-        let item = request.uri().path().replace("/resumes/", "");
-        let mut resume = resume_dir.join(item);
-        resume.set_extension("pdf");
-
-        println!("{:?}", resume);
-
-        let bytes = std::fs::read(resume).unwrap();
-
-        response.respond(Response::new(bytes));
-    });
-
     let db = AppDB::new();
     let mut new_add = use_signal(|| false);
     let resumes = use_signal(|| db.get_resumes().unwrap());
