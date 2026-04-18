@@ -2,7 +2,8 @@ use std::{fs, path::PathBuf};
 
 use anyhow::Result;
 use rusqlite::{Connection, Row, params};
-use sha2::{Digest, Sha256};
+
+use crate::utils::compute_file_hash;
 
 pub trait RowRead: Sized {
     fn from_row(row: &Row) -> rusqlite::Result<Self>;
@@ -186,8 +187,7 @@ pub struct NewResume {
 
 impl RowInsert for NewResume {
     fn add_row(&self, conn: &Connection) -> Result<()> {
-        let bytes = fs::read(&self.file_path)?;
-        let hash = String::from_utf8(Sha256::digest(&bytes).to_vec())?;
+        let hash = compute_file_hash(&self.file_path)?;
         let dest_dir = dirs::data_dir().unwrap().join("RejectionRoulette/Resumes/");
         let mut dest_path = dest_dir.join(&hash);
         dest_path.set_extension("pdf");
@@ -199,7 +199,7 @@ impl RowInsert for NewResume {
 
         // Avoid duplication
         if !dest_path.exists() {
-            fs::write(dest_path, bytes)?;
+            fs::copy(&self.file_path, dest_path)?;
         }
 
         Ok(())

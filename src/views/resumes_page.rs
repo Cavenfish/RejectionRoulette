@@ -1,43 +1,51 @@
+use backend::app_data_dir;
+use backend::database::{AppDB, Resume};
+use dioxus::desktop::use_asset_handler;
+use dioxus::desktop::wry::http::Response;
 use dioxus::prelude::*;
+use open;
 
-#[derive(PartialEq, Clone)]
-struct ResumeEntry {
-    id: i64,
-    name: String,
-    hash: String,
-}
+use crate::components::{AddResume, ModalOverlay};
 
 #[component]
 pub fn ResumesPage() -> Element {
-    // In a real app, pull these from your AppDB
-    let mut resumes = use_signal(|| {
-        vec![
-            ResumeEntry {
-                id: 1,
-                name: "Software_Engineer_2026.pdf".into(),
-                hash: "a1b2c3d4".into(),
-            },
-            ResumeEntry {
-                id: 2,
-                name: "Product_Manager_v1.pdf".into(),
-                hash: "e5f6g7h8".into(),
-            },
-        ]
+    use_asset_handler("resumes", |request, response| {
+        let resume_dir = app_data_dir().join("Resumes");
+        let item = request.uri().path().replace("/resumes/", "");
+        let mut resume = resume_dir.join(item);
+        resume.set_extension("pdf");
+
+        println!("{:?}", resume);
+
+        let bytes = std::fs::read(resume).unwrap();
+
+        response.respond(Response::new(bytes));
     });
 
-    let mut selected_resume: Signal<Option<ResumeEntry>> = use_signal(|| None);
+    let db = AppDB::new();
+    let mut new_add = use_signal(|| false);
+    let resumes = use_signal(|| db.get_resumes().unwrap());
+
+    let mut selected_resume: Signal<Option<Resume>> = use_signal(|| None);
 
     rsx! {
-        div { class: "resume-page",
+        div {
+            class: "resume-page",
 
-            // Left Side: Grid
-            div { class: "resume-library",
-                div { class: "library-header",
+            div {
+                class: "resume-library",
+
+                div {
+                    class: "library-header",
                     h2 { "Resumes" }
-                    button {
-                        class: "btn-submit",
-                        onclick: move |_| { /* Trigger File Picker Modal Next */ },
-                        "Add New"
+
+                    div {
+                        class: "new-item",
+                        button {
+                            class: "btn-submit",
+                            onclick: move |_| new_add.set(true),
+                            "Add New"
+                        }
                     }
                 }
 
@@ -45,11 +53,15 @@ pub fn ResumesPage() -> Element {
                     for r in resumes.read().iter() {
                         {
                             let current_item = r.clone();
+                            let file_path = db.get_file(&r).unwrap();
 
                             rsx! {
                                 div {
                                     class: if selected_resume.read().as_ref() == Some(&current_item) { "resume-card active" } else { "resume-card" },
-                                    onclick: move |_| selected_resume.set(Some(current_item.clone())),
+                                    onclick: move |_| {
+                                        open::that(&file_path).unwrap();
+                                        selected_resume.set(Some(current_item.clone()))
+                                    },
 
                                     // Resume SVG (Document icon)
                                     svg { view_box: "0 0 24 24", fill: "none", stroke: "currentColor", stroke_width: "2",
@@ -64,20 +76,10 @@ pub fn ResumesPage() -> Element {
                 }
             }
 
-            // Right Side: Preview
-            div { class: "resume-preview",
-                if let Some(resume) = selected_resume.read().as_ref() {
-                    div { class: "preview-header",
-                        h3 { "{resume.name}" }
-                        button { class: "btn-delete", "Delete" }
-                    }
-                    // Assuming your storage dir is served or accessible via local path
-                    iframe {
-                        class: "pdf-frame",
-                        src: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Swap with: format!("./storage/resumes/{}", resume.hash)
-                    }
-                } else {
-                    div { class: "no-selection", "Select a resume to preview contents" }
+            if new_add() {
+                ModalOverlay {
+                    on_close: move |_| new_add.set(false),
+                    inner: rsx!{ AddResume {resumes, on_close: move |_| new_add.set(false)} }
                 }
             }
         }

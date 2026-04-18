@@ -5,7 +5,7 @@ use chrono::{Local, NaiveDate};
 use dirs::data_dir;
 use rusqlite::{Connection, params};
 
-use crate::database::schema::{NewApplication, NewInterview, NewOffer, NewResume};
+use crate::database::schema::{NewApplication, NewInterview, NewOffer, NewResume, Resume};
 
 use super::schema::{Application, Interview, Offer, RowInsert, RowRead, init_db};
 
@@ -240,16 +240,18 @@ impl AppDB {
         Ok(())
     }
 
-    pub fn get_resume(&self, name: String) -> Result<PathBuf> {
-        let hash: String = self.connection.query_row(
-            "SELECT hash FROM Resumes WHERE name=?1",
-            params![name],
-            |row| row.get(0),
-        )?;
-
-        let mut file_path = self.resume_dir.join(&hash);
+    pub fn get_file(&self, resume: &Resume) -> Result<PathBuf> {
+        let mut file_path = self.resume_dir.join(&resume.hash);
         file_path.set_extension("pdf");
 
         Ok(file_path)
+    }
+
+    pub fn get_resumes(&self) -> Result<Vec<Resume>> {
+        let mut stmt = self.connection.prepare("SELECT * FROM Resumes")?;
+
+        let tmp = stmt.query_map([], |row| Ok(Resume::from_row(row)?))?;
+
+        Ok(tmp.map(|q| q.unwrap()).collect())
     }
 }

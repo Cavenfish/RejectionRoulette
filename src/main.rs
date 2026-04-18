@@ -49,7 +49,10 @@ fn main() {
         .with_resizable(true);
 
     // Create the configuration, disabling the default menu
-    let cfg = Config::new().with_window(window).with_menu(None); // This hides the "File, Edit..." menu bar
+    let cfg = Config::new()
+        .with_window(window)
+        .with_menu(None)
+        .with_custom_protocol("resumes", |_, _| unreachable!("handled by asset handler"));
 
     LaunchBuilder::new().with_cfg(cfg).launch(App);
 }

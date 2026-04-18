@@ -9,3 +9,6 @@ pub use modal_overlay::ModalOverlay;
 
 mod edit_entry;
 pub use edit_entry::{EditApplication, EditInterview, EditOffer};
+
+mod add_resume;
+pub use add_resume::AddResume;

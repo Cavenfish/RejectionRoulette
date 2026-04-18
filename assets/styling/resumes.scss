@@ -28,6 +28,7 @@
 
   // The Grid of "File Cards"
   .resume-grid {
+    padding-top: 5px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
@@ -75,46 +76,57 @@
       overflow: hidden;
     }
   }
+}
 
-  // Right Column: The PDF Previewer
-  .resume-preview {
-    flex: 1.5;
-    background: theme.$secondary-bg;
-    border: 1px solid theme.$accent-bg;
-    border-radius: 12px;
+.file-input-container {
+  width: 100%;
+
+  // 1. Hide the ugly default input
+  .hidden-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  // 2. Style the label as the "real" button
+  .file-label {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 
-    .preview-header {
-      padding: 15px 20px;
-      border-bottom: 1px solid theme.$accent-bg;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: theme.$accent-bg;
+    padding: 30px 20px;
+    background-color: theme.$accent-bg;
+    color: theme.$secondary-fg;
 
-      h3 {
-        margin: 0;
-        font-size: 1rem;
-        color: theme.$primary-fg;
+    border: 2px dashed theme.$accent-bg;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    .icon {
+      font-size: 2rem;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      border-color: theme.$accent;
+      background-color: rgba(theme.$accent, 0.05);
+      color: theme.$primary-fg;
+
+      .icon {
+        transform: scale(1.1);
       }
     }
 
-    .pdf-frame {
-      flex-grow: 1;
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-
-    .no-selection {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: theme.$secondary-fg;
-      font-style: italic;
+    // Highlighting when the hidden input is focused (for accessibility)
+    .hidden-input:focus + & {
+      outline: 2px solid theme.$accent;
+      outline-offset: 2px;
     }
   }
 }
