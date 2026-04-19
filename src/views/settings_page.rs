@@ -3,61 +3,76 @@ use dioxus::{document::eval, prelude::*};
 
 #[component]
 pub fn SettingsPage() -> Element {
-    let mut settings = AppSettings::load();
-    let mut theme_state = use_signal(|| "dark".to_string());
-    let mut auto_save = use_signal(|| true);
+    let version = env!("CARGO_PKG_VERSION");
+    let mut settings = use_signal(|| AppSettings::load());
 
     rsx! {
         div { class: "settings-container",
             h1 { "Settings" }
 
             // Appearance Section
-            div { class: "settings-card",
+            div {
+                class: "settings-card",
                 h3 { "Appearance" }
-                div { class: "settings-group",
-                    div { class: "setting-item",
-                        div { class: "info",
+
+                div {
+                    class: "settings-group",
+                    div {
+                        class: "setting-item",
+                        div {
+                            class: "info",
                             label { "Desktop Theme" }
                             span { "Choose your visual interface style." }
                         }
                         select {
-                            value: "{theme_state}",
+                            value: "{settings().theme}",
                             onchange: move |evt| {
+                                let mut current = settings();
                                 let theme = evt.value();
-                                settings.theme = theme;
-                                let eval_stmt = settings.get_eval_stmt().unwrap();
+                                current.theme = theme;
+                                let eval_stmt = current.get_eval_stmt().unwrap();
                                 eval(&eval_stmt);
-                                settings.save().unwrap();
+                                settings.set(current);
                             },
-                            option { value: "dark", "Dark (default)" }
+                            option { value: "dark", "Dark" }
                             option { value: "light", "Light" }
+                            option { value: "casino", "Midnight Casino" }
+                            option { value: "nord", "Nordic Calm" }
+                            option { value: "terminal", "Vintage Terminal" }
+                            option { value: "sepia", "Sepia Library" }
+                            option { value: "cyberpunk", "Cyberpunk Neon" }
+                            option { value: "coffee", "Coffee Shop" }
+                            option { value: "ocean", "Deep Sea" }
+                            option { value: "dracula", "Dracula Pro" }
+                            option { value: "peach", "Peach Fuzz" }
                         }
+                    }
+
+                    button {
+                        class: "save-btn",
+                        onclick: move |_| settings().save().unwrap(),
+                        "Save Settings"
                     }
                 }
             }
 
-            // Data & Security Section
-            div { class: "settings-card",
+            // Data Management
+            div {
+                class: "settings-card",
                 h3 { "Data Management" }
-                div { class: "settings-group",
-                    div { class: "setting-item",
-                        div { class: "info",
-                            label { "Auto-save Database" }
-                            span { "Automatically commit changes to SQLite on input." }
-                        }
-                        input {
-                            r#type: "checkbox",
-                            checked: "{auto_save}",
-                            onchange: move |_| auto_save.toggle()
-                        }
-                    }
-                    div { class: "setting-item",
-                        div { class: "info",
+
+                div {
+                    class: "settings-group",
+
+                    div {
+                        class: "setting-item",
+                        div {
+                            class: "info",
                             label { "Export Data" }
                             span { "Download your application history as a CSV." }
                         }
                         button {
-                            class: "btn-submit", // Reusing your form button style
+                            class: "basic-btn",
                             "Export CSV"
                         }
                     }
@@ -65,13 +80,25 @@ pub fn SettingsPage() -> Element {
             }
 
             // App Info Section
-            div { class: "settings-card",
+            div {
+                class: "settings-card",
                 h3 { "About" }
-                div { class: "settings-group",
-                    div { class: "setting-item",
-                        div { class: "info",
+
+                div {
+                    class: "settings-group",
+                    div {
+                        class: "setting-item",
+
+                        div {
+                            class: "info",
+                            label { "GitHub Repo" }
+                            span { "https://github.com/Cavenfish/RejectionRoulette" }
+                        }
+
+                        div {
+                            class: "info",
                             label { "Version" }
-                            span { "Rejection Roulette v1.0.4-beta" }
+                            span { "v{version}" }
                         }
                     }
                 }

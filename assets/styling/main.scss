@@ -16,3 +16,34 @@ body {
 button {
   font-size: theme.$font-size-base;
 }
+
+.basic-btn {
+  // Sizing and Shape
+  padding: 8px 16px; // Better than fixed width/height for text
+  min-width: 80px;
+  border-radius: 6px;
+  border: 1px solid theme.$accent-bg;
+
+  // Colors
+  color: theme.$primary-fg;
+  background-color: theme.$secondary-bg;
+
+  // Typography
+  font-size: theme.$font-size-sm;
+  font-weight: 500;
+  cursor: pointer;
+
+  // Animation
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: theme.$accent-bg;
+    border-color: theme.$accent; // Highlight border on hover
+    transform: translateY(-1px); // Subtle lift
+  }
+
+  &:active {
+    transform: translateY(0); // Press effect
+    background-color: theme.$accent-bg;
+  }
+}

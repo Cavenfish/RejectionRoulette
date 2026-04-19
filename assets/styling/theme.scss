@@ -6,8 +6,7 @@ $font-size-base: 10pt; // Standard for desktop apps
 $font-size-sm: 8pt;
 $font-size-lg: 16pt;
 
-// Define the Theme Palette
-// We use CSS variables for colors so they can be swapped dynamically
+// Dark Theme (Default)
 [data-theme="dark"] {
   // Dark Theme (Default)
   --bg-primary: #121212;
@@ -24,7 +23,7 @@ $font-size-lg: 16pt;
   --warning: #ff9800;
 }
 
-// Light Theme Override
+// Light Theme
 [data-theme="light"] {
   --bg-primary: #ffffff;
   --bg-secondary: #f5f5f5;
@@ -38,6 +37,150 @@ $font-size-lg: 16pt;
   --success: #2e7d32;
   --error: #d32f2f;
   --warning: #ed6c02;
+}
+
+// Midnight Casino
+[data-theme="casino"] {
+  --bg-primary: #0a0e14;
+  --bg-secondary: #141b24;
+  --bg-accent: #1c252f;
+
+  --fg-primary: #ffffff;
+  --fg-secondary: #94a3b8;
+  --fg-muted: #475569;
+
+  --accent-color: #f43f5e; // Rose/Crimson
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #fbbf24;
+}
+
+// Nordic Calm
+[data-theme="nord"] {
+  --bg-primary: #2e3440;
+  --bg-secondary: #3b4252;
+  --bg-accent: #434c5e;
+
+  --fg-primary: #eceff4;
+  --fg-secondary: #d8dee9;
+  --fg-muted: #4c566a;
+
+  --accent-color: #88c0d0; // Frost Blue
+  --success: #a3be8c;
+  --error: #bf616a;
+  --warning: #ebcb8b;
+}
+
+// Vintage Terminal
+[data-theme="terminal"] {
+  --bg-primary: #0d0208;
+  --bg-secondary: #003b00; // Deep Forest
+  --bg-accent: #008f11; // Matrix Green
+
+  --fg-primary: #00ff41;
+  --fg-secondary: #008f11;
+  --fg-muted: #003b00;
+
+  --accent-color: #00ff41;
+  --success: #00ff41;
+  --error: #ff0000;
+  --warning: #ffff00;
+}
+
+// Sepia Library
+[data-theme="sepia"] {
+  --bg-primary: #f4ecd8;
+  --bg-secondary: #eaddca;
+  --bg-accent: #d2b48c;
+
+  --fg-primary: #433422;
+  --fg-secondary: #5f4b32;
+  --fg-muted: #a89078;
+
+  --accent-color: #8b4513; // Saddle Brown
+  --success: #3e5c07;
+  --error: #8b0000;
+  --warning: #b8860b;
+}
+
+// Cyberpunk Neon
+[data-theme="cyberpunk"] {
+  --bg-primary: #0f0524;
+  --bg-secondary: #1d0b3d;
+  --bg-accent: #301263;
+
+  --fg-primary: #00fff2; // Neon Cyan
+  --fg-secondary: #d400ff; // Neon Magenta
+  --fg-muted: #5d35b0;
+
+  --accent-color: #f7ff00; // Electric Yellow
+  --success: #39ff14;
+  --error: #ff003c;
+  --warning: #ff8a00;
+}
+
+// Coffee Shop
+[data-theme="coffee"] {
+  --bg-primary: #2c2420;
+  --bg-secondary: #3c2f2a;
+  --bg-accent: #4e3d36;
+
+  --fg-primary: #ede0d4;
+  --fg-secondary: #ddb892;
+  --fg-muted: #7f5539;
+
+  --accent-color: #b08968; // Roasted Bean
+  --success: #606c38;
+  --error: #bc4749;
+  --warning: #dda15e;
+}
+
+// Deep Sea
+[data-theme="ocean"] {
+  --bg-primary: #011627;
+  --bg-secondary: #0b2942;
+  --bg-accent: #1d3d58;
+
+  --fg-primary: #fdfffc;
+  --fg-secondary: #41ead4;
+  --fg-muted: #597d9a;
+
+  --accent-color: #2ec4b6; // Teal Splash
+  --success: #c1f24d;
+  --error: #ff3366;
+  --warning: #ff9f1c;
+}
+
+// Dracula Pro
+[data-theme="dracula"] {
+  --bg-primary: #282a36;
+  --bg-secondary: #44475a;
+  --bg-accent: #6272a4;
+
+  --fg-primary: #f8f8f2;
+  --fg-secondary: #bd93f9;
+  --fg-muted: #94a3b8;
+
+  --accent-color: #ff79c6; // Pink Highlight
+  --success: #50fa7b;
+  --error: #ff5555;
+  --warning: #f1fa8c;
+}
+
+// Peach Fuzz
+[data-theme="peach"] {
+  --bg-primary: #fff5f0;
+  --bg-secondary: #ffe3d5;
+  --bg-accent: #ffd1bc;
+
+  --fg-primary: #5f4339;
+  --fg-secondary: #8d6e63;
+  --fg-muted: #bcaaa4;
+
+  --accent-color: #ff8a65; // Muted Coral
+  --success: #81c784;
+  --error: #e57373;
+  --warning: #ffb74d;
 }
 
 // SCSS Variable Aliases for @use consumption

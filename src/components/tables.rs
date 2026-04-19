@@ -6,9 +6,9 @@ use super::{EditApplication, EditInterview, EditOffer, ModalOverlay};
 fn get_status_color(status: &str) -> &'static str {
     match status {
         "Ghost" => "grey",
-        "Rejected" => "red",
-        "Interview" => "green",
-        "Pending" => "yellow",
+        "Rejected" => "var(--error)",
+        "Interview" => "var(--success)",
+        "Pending" => "var(--warning)",
         _ => "white",
     }
 }
