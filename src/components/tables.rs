@@ -27,6 +27,7 @@ pub fn ApplicationsTable(table: Signal<Vec<Application>>) -> Element {
                         th { width: "25%", "Company" }
                         th { width: "75%", "Role" }
                         th { width: "20ch", "Location" }
+                        th { width: "20ch", "Resume" }
                         th { width: "12ch", "Date" }
                         th { width: "10ch", "Status" }
                     }
@@ -46,6 +47,11 @@ pub fn ApplicationsTable(table: Signal<Vec<Application>>) -> Element {
                                     td { "{item.company}" }
                                     td { "{item.role}" }
                                     td { "{item.location}" }
+                                    if let Some(resume) = &item.resume {
+                                        td {"{resume}"}
+                                    } else {
+                                        td {"--"}
+                                    }
                                     td { "{item.submit_date}" }
                                     td {
                                         span {

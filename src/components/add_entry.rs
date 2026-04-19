@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JobData {
+    pub resume: Option<i64>,
     pub company: String,
     pub role: String,
     pub location: String,
@@ -22,6 +23,8 @@ pub struct AddApplicationFormProps {
 
 #[component]
 pub fn AddApplicationForm(mut props: AddApplicationFormProps) -> Element {
+    let db = AppDB::new();
+    let resumes = db.get_resumes().unwrap();
     let date = Local::now().format("%Y/%m/%d").to_string();
 
     rsx! {
@@ -36,7 +39,7 @@ pub fn AddApplicationForm(mut props: AddApplicationFormProps) -> Element {
                     // TODO: Check date is valid
 
                     let new_app = NewApplication {
-                        resume_id: None,
+                        resume_id: data.resume,
                         company: data.company,
                         role: data.role,
                         location: data.location,
@@ -78,15 +81,27 @@ pub fn AddApplicationForm(mut props: AddApplicationFormProps) -> Element {
                 }
 
                 div {
+                    class: "form-group",
+                    label { "Resume" }
+                    select {
+                        name: "resume",
+                        option { value: None::<i64>, label: "--"}
+                        for r in resumes {
+                            option { value: r.id, label: "{r.name}" }
+                        }
+                    }
+                }
+
+                div {
                     class: "form-grop",
                     label { "Status" }
                     select {
                         name: "status",
                         value: "Pending",
+                        option { "Pending" }
                         option { "Ghost" }
                         option { "Rejected" }
                         option { "Interview" }
-                        option { "Pending" }
                     }
                 }
 

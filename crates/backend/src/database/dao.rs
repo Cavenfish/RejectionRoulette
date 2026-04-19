@@ -77,7 +77,10 @@ impl AppDB {
     }
 
     pub fn get_applications(&self) -> Result<Vec<Application>> {
-        let mut stmt = self.connection.prepare("SELECT * FROM Applications")?;
+        let mut stmt = self.connection.prepare(
+            "SELECT a.id, r.id, a.company, a.role, a.location, a.status, r.name, a.submit_date
+            FROM Applications AS a LEFT JOIN Resumes AS r ON r.id = a.resume_id",
+        )?;
 
         let tmp = stmt.query_map([], |row| Ok(Application::from_row(row)?))?;
 
@@ -113,10 +116,11 @@ impl AppDB {
     pub fn edit_application(&self, item: NewApplication, id: i64) -> Result<()> {
         self.connection.execute(
             "UPDATE Applications
-            SET company=?1, role=?2, location=?3, status=?4, submit_date=?5
-            WHERE id=?6
+            SET resume_id=?1, company=?2, role=?3, location=?4, status=?5, submit_date=?6
+            WHERE id=?7
             ",
             params![
+                item.resume_id,
                 item.company,
                 item.role,
                 item.location,

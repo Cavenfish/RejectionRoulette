@@ -52,6 +52,7 @@ pub struct Application {
     pub role: String,
     pub location: String,
     pub status: String,
+    pub resume: Option<String>,
     pub submit_date: String,
 }
 
@@ -64,7 +65,8 @@ impl RowRead for Application {
             role: row.get(3)?,
             location: row.get(4)?,
             status: row.get(5)?,
-            submit_date: row.get(6)?,
+            resume: row.get(6)?,
+            submit_date: row.get(7)?,
         })
     }
 }

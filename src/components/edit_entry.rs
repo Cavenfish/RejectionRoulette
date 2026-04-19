@@ -12,6 +12,9 @@ pub struct EditApplicationProps {
 
 #[component]
 pub fn EditApplication(mut props: EditApplicationProps) -> Element {
+    let db = AppDB::new();
+    let resumes = db.get_resumes().unwrap();
+
     // Local state for the form inputs
     let mut resume = use_signal(|| props.item.resume_id.clone());
     let mut company = use_signal(|| props.item.company.clone());
@@ -64,6 +67,19 @@ pub fn EditApplication(mut props: EditApplicationProps) -> Element {
                         r#type: "text",
                         value: "{date}",
                         oninput: move |e| date.set(e.value())
+                    }
+                }
+
+                div {
+                    class: "form-group",
+                    label { "Resume" }
+                    select {
+                        value: resume(),
+                        onchange: move |e| resume.set(e.value().parse::<i64>().ok()),
+                        option { value: None::<i64>, label: "--"}
+                        for r in resumes {
+                            option { value: r.id, label: "{r.name}" }
+                        }
                     }
                 }
 
