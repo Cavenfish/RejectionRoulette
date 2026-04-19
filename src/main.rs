@@ -1,4 +1,6 @@
+use backend::settings::AppSettings;
 use dioxus::desktop::{Config, WindowBuilder};
+use dioxus::document::eval;
 use dioxus::prelude::*;
 
 mod components;
@@ -49,16 +51,17 @@ fn main() {
         .with_resizable(true);
 
     // Create the configuration, disabling the default menu
-    let cfg = Config::new()
-        .with_window(window)
-        .with_menu(None)
-        .with_custom_protocol("resumes", |_, _| unreachable!("handled by asset handler"));
+    let cfg = Config::new().with_window(window).with_menu(None);
 
     LaunchBuilder::new().with_cfg(cfg).launch(App);
 }
 
 #[component]
 fn App() -> Element {
+    let settings = AppSettings::load();
+    let eval_stmt = settings.get_eval_stmt().unwrap();
+    eval(&eval_stmt);
+
     rsx! {
         document::Link { rel: "stylesheet", href: MAIN_CSS }
 

@@ -11,6 +11,7 @@ members = ["crates/*"]
 anyhow = "1.0.102"
 backend = { path = "./crates/backend" }
 chrono = "0.4.44"
+serde = { version = "1.0.228", features = ["derive"] }
 
 [dependencies]
 anyhow.workspace = true
@@ -18,7 +19,7 @@ backend.workspace = true
 chrono.workspace = true
 dioxus = { version = "0.7.1", features = ["router", "html"] }
 open = "5.3.3"
-serde = { version = "1.0.228", features = ["derive"] }
+serde.workspace = true
 
 [features]
 default = ["desktop"]

@@ -4,6 +4,7 @@ use dirs::data_dir;
 
 pub mod database;
 pub mod plots;
+pub mod settings;
 mod utils;
 
 pub fn app_data_dir() -> PathBuf {

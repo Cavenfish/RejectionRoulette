@@ -1,7 +1,9 @@
-use dioxus::prelude::*;
+use backend::settings::AppSettings;
+use dioxus::{document::eval, prelude::*};
 
 #[component]
 pub fn SettingsPage() -> Element {
+    let mut settings = AppSettings::load();
     let mut theme_state = use_signal(|| "dark".to_string());
     let mut auto_save = use_signal(|| true);
 
@@ -20,10 +22,15 @@ pub fn SettingsPage() -> Element {
                         }
                         select {
                             value: "{theme_state}",
-                            onchange: move |evt| theme_state.set(evt.value()),
-                            option { value: "dark", "Midnight Blue (Default)" }
-                            option { value: "roulette", "Roulette Red" }
-                            option { value: "light", "High Contrast Light" }
+                            onchange: move |evt| {
+                                let theme = evt.value();
+                                settings.theme = theme;
+                                let eval_stmt = settings.get_eval_stmt().unwrap();
+                                eval(&eval_stmt);
+                                settings.save().unwrap();
+                            },
+                            option { value: "dark", "Dark (default)" }
+                            option { value: "light", "Light" }
                         }
                     }
                 }

@@ -8,7 +8,7 @@ $font-size-lg: 16pt;
 
 // Define the Theme Palette
 // We use CSS variables for colors so they can be swapped dynamically
-:root {
+[data-theme="dark"] {
   // Dark Theme (Default)
   --bg-primary: #121212;
   --bg-secondary: #1e1e1e;
