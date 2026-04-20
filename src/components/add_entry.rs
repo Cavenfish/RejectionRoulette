@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JobData {
-    pub resume: Option<i64>,
+    pub resume: String,
     pub company: String,
     pub role: String,
     pub location: String,
@@ -39,7 +39,7 @@ pub fn AddApplicationForm(mut props: AddApplicationFormProps) -> Element {
                     // TODO: Check date is valid
 
                     let new_app = NewApplication {
-                        resume_id: data.resume,
+                        resume_id: data.resume.parse().ok(),
                         company: data.company,
                         role: data.role,
                         location: data.location,
