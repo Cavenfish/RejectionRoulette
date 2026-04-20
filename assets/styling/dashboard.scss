@@ -33,6 +33,46 @@
       border-bottom: 1px solid theme.$accent-bg;
       padding-bottom: 12px;
     }
+
+    .card-row {
+      display: flex;
+      align-items: center; // Vertically centers text
+      justify-content: space-between; // Pushes the date to the far right
+      gap: 1.5rem;
+      width: 100%;
+
+      .main-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1; // Allows this section to grow/shrink
+        min-width: 0; // Prevents text overflow issues
+
+        .company-name {
+          font-weight: 700;
+          color: var(--fg-primary);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .generic-info {
+          font-size: 0.9rem;
+          color: var(--fg-secondary);
+          background: var(--bg-accent);
+          padding: 0.2rem 0.6rem;
+          border-radius: 4px;
+          white-space: nowrap;
+        }
+      }
+
+      .date-display {
+        font-size: 0.85rem;
+        color: var(--fg-secondary);
+        font-variant-numeric: tabular-nums; // Keeps numbers aligned
+        white-space: nowrap;
+      }
+    }
   }
 
   // Large Plots (Full Width)
@@ -65,6 +105,7 @@
     border-top: 4px solid theme.$status-success; // Visual cue for success
 
     .salary {
+      padding-right: 10px;
       font-size: 2.5rem;
       font-weight: 800;
       color: theme.$primary-fg;

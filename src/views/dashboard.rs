@@ -4,6 +4,9 @@ use dioxus::prelude::*;
 #[component]
 pub fn Dashboard() -> Element {
     let db = AppDB::new();
+    let ghost_alerts = db.get_ghost_alerts(8).unwrap();
+    let upcoming = db.get_upcoming_interviews().unwrap();
+    let offers = db.get_offers().unwrap();
     let stats = db.get_stats().unwrap();
     let sankey = stats_sankey(&stats).unwrap();
 
@@ -18,6 +21,18 @@ pub fn Dashboard() -> Element {
                 div {
                     class: "card event-card",
                     h4 { "Upcoming Interviews" }
+
+                    for i in upcoming.iter() {
+                        div {
+                            class: "card-row",
+                            div {
+                                class: "main-info",
+                                span { class: "company-name", "{i.company}" }
+                                span { class: "generic-info", "{i.interview_type}" }
+                            }
+                            span { class: "date-display", "{i.interview_date}" }
+                        }
+                    }
                 }
 
                 div {
@@ -25,24 +40,44 @@ pub fn Dashboard() -> Element {
                     h4 { "Ghost Alert" }
                     div {
                         class: "alert-item",
-                        span { class: "company", "Evil Corp" }
-                        span { class: "days", "21 Days No Contact" }
+
+                        for alert in ghost_alerts.iter() {
+                            div {
+                                class: "card-row",
+                                div {
+                                    class: "main-info",
+                                    span { class: "company-name", "{alert.company}"}
+                                }
+                                span { class: "date-display", "{alert.submit_date}" }
+                            }
+                        }
                     }
                 }
 
                 div {
                     class: "card offer-card",
                     h4 { "Open Offers" }
-                    div { class: "salary", "$140k" }
-                    span { "Base + Equity (Stripe)" }
-                    div { class: "salary", "$120k" }
-                    span { "Base + Equity (PayPal)" }
+
+                    for off in offers.iter() {
+                        div {
+                            class: "card-row",
+                            div {
+                                class: "main-info",
+                                span { class: "salary", "${off.base_salary / 1000}k" }
+                                span { class: "company-name", "{off.company}" }
+                            }
+                            span { class: "date-display", "{off.expiration_date}" }
+                        }
+                    }
                 }
 
                 div {
                     class: "card summary-card",
                     h4 { "Quick Stats" }
-                    div { "Total Apps: 42" }
+
+                    for (key,value) in stats.iter() {
+                        span {"{key}: {value}"}
+                    }
                 }
 
                 div {

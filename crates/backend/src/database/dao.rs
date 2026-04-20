@@ -68,6 +68,33 @@ impl AppDB {
         Ok(stats)
     }
 
+    pub fn get_ghost_alerts(&self, num_weeks: i64) -> Result<Vec<Application>> {
+        let mut applications = self.get_applications()?;
+        let today = Local::now().date_naive();
+
+        applications.retain(|a| {
+            let sent = NaiveDate::parse_from_str(&a.submit_date, "%Y/%m/%d").unwrap();
+
+            today.signed_duration_since(sent).num_weeks() >= num_weeks - 1
+                && today.signed_duration_since(sent).num_weeks() <= num_weeks
+                && a.status == "Pending"
+        });
+
+        Ok(applications)
+    }
+
+    pub fn get_upcoming_interviews(&self) -> Result<Vec<Interview>> {
+        let mut interviews = self.get_interviews()?;
+        let today = Local::now().date_naive();
+
+        interviews.retain(|i| {
+            let date = NaiveDate::parse_from_str(&i.interview_date, "%Y/%m/%d").unwrap();
+            date > today
+        });
+
+        Ok(interviews)
+    }
+
     pub fn delete(&self, id: i64) -> Result<()> {
         // Deletes cascading
         self.connection
