@@ -74,11 +74,10 @@ pub fn EditApplication(mut props: EditApplicationProps) -> Element {
                     class: "form-group",
                     label { "Resume" }
                     select {
-                        value: resume(),
                         onchange: move |e| resume.set(e.value().parse::<i64>().ok()),
-                        option { value: None::<i64>, label: "--"}
+                        option { value: None::<i64>, label: "--", selected: resume().is_none()}
                         for r in resumes {
-                            option { value: r.id, label: "{r.name}" }
+                            option { value: r.id, label: "{r.name}", selected: resume() == Some(r.id) }
                         }
                     }
                 }
