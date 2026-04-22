@@ -8,12 +8,14 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct AppSettings {
     pub theme: String,
+    pub ghost_time: i64,
 }
 
 impl Default for AppSettings {
     fn default() -> Self {
         Self {
             theme: "dark".to_string(),
+            ghost_time: 8,
         }
     }
 }

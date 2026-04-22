@@ -8,12 +8,11 @@ pub fn SettingsPage() -> Element {
 
     rsx! {
         div { class: "settings-container",
-            h1 { "Settings" }
 
-            // Appearance Section
+            // Settings Section
             div {
                 class: "settings-card",
-                h3 { "Appearance" }
+                h3 { "Settings" }
 
                 div {
                     class: "settings-group",
@@ -45,6 +44,25 @@ pub fn SettingsPage() -> Element {
                             option { value: "ocean", "Deep Sea" }
                             option { value: "dracula", "Dracula Pro" }
                             option { value: "peach", "Peach Fuzz" }
+                        }
+                    }
+
+                    div {
+                        class: "setting-item",
+                        div {
+                            class: "info",
+                            label { "Weeks to Ghost" }
+                            span { "Set the number of weeks to wait before considering an application ghosted." }
+                        }
+                        input {
+                            r#type: "number",
+                            value: "{settings().ghost_time}",
+                            onchange: move |evt| {
+                                let mut current = settings();
+                                let ghost_time = evt.value();
+                                current.ghost_time = ghost_time.parse().unwrap_or(8);
+                                settings.set(current);
+                            }
                         }
                     }
 

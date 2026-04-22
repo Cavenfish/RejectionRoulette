@@ -11,7 +11,7 @@ use super::args::{EditArgs, RemoveArgs, UpdateArgs};
 
 pub fn stats() -> Result<()> {
     let db = AppDB::new();
-    db.scan_for_ghosts()?;
+    db.scan_for_ghosts(8)?;
 
     let stats = db.get_stats()?;
 
@@ -110,7 +110,7 @@ pub fn edit(cmds: EditArgs) -> Result<()> {
 
 pub fn show(cmds: ShowArgs) -> Result<()> {
     let db = AppDB::new();
-    db.scan_for_ghosts()?;
+    db.scan_for_ghosts(8)?;
 
     if cmds.applications {
         show_applications(&db)?;

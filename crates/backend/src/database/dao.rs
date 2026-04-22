@@ -40,14 +40,14 @@ impl AppDB {
         }
     }
 
-    pub fn scan_for_ghosts(&self) -> Result<()> {
+    pub fn scan_for_ghosts(&self, num_weeks: i64) -> Result<()> {
         let mut applications = self.get_applications()?;
 
         for app in applications.iter_mut() {
             let today = Local::now().date_naive();
             let sent = NaiveDate::parse_from_str(&app.submit_date, "%Y/%m/%d")?;
 
-            if today.signed_duration_since(sent).num_weeks() >= 8
+            if today.signed_duration_since(sent).num_weeks() >= num_weeks
                 && app.status.as_str() == "Pending"
             {
                 self.update_application(app.id, "Ghost".to_string())?;

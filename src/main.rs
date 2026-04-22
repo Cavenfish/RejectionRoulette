@@ -1,3 +1,4 @@
+use backend::database::AppDB;
 use backend::settings::AppSettings;
 use dioxus::desktop::{Config, WindowBuilder};
 use dioxus::document::eval;
@@ -58,7 +59,11 @@ fn main() {
 
 #[component]
 fn App() -> Element {
+    let db = AppDB::new();
     let settings = AppSettings::load();
+
+    db.scan_for_ghosts(settings.ghost_time).unwrap();
+
     let eval_stmt = settings.get_eval_stmt().unwrap();
     eval(&eval_stmt);
 
