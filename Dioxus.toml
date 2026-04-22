@@ -15,4 +15,9 @@ script = []
 [bundle]
 publisher = "Cavenfish"
 identifier = "com.rr"
-icon = ["assets/icons/rr.png"]
+icon = [
+    "assets/icons/rr_16x16.png",
+    "assets/icons/rr_32x32.png",
+    "assets/icons/rr_64x64.png",
+    "assets/icons/rr_256x256.png"
+]
