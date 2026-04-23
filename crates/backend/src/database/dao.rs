@@ -1,11 +1,14 @@
-use std::{collections::BTreeMap, fs, path::PathBuf};
+use std::{collections::HashMap, fs, path::PathBuf};
 
 use anyhow::Result;
 use chrono::{Local, NaiveDate};
 use dirs::data_dir;
 use rusqlite::{Connection, params};
 
-use crate::database::schema::{NewApplication, NewInterview, NewOffer, NewResume, Resume};
+use crate::{
+    database::schema::{NewApplication, NewInterview, NewOffer, NewResume, Resume},
+    plots::{Stats, StatusData},
+};
 
 use super::schema::{Application, Interview, Offer, RowInsert, RowRead, init_db};
 
@@ -57,15 +60,25 @@ impl AppDB {
         Ok(())
     }
 
-    pub fn get_stats(&self) -> Result<BTreeMap<String, u32>> {
+    pub fn get_stats(&self) -> Result<Stats> {
         let applications = self.get_applications()?;
-        let mut stats: BTreeMap<String, u32> = BTreeMap::new();
+        let mut sankey = StatusData::new();
+        let mut resumes: HashMap<String, StatusData> = HashMap::new();
 
         for app in applications.iter() {
-            *stats.entry(app.status.clone()).or_insert(0) += 1;
+            sankey.add_one(&app.status);
+
+            if let Some(name) = &app.resume {
+                if let Some(data) = resumes.get_mut(name) {
+                    data.add_one(&app.status);
+                } else {
+                    let new = StatusData::new();
+                    resumes.insert(name.to_string(), new);
+                }
+            }
         }
 
-        Ok(stats)
+        Ok(Stats { sankey, resumes })
     }
 
     pub fn get_ghost_alerts(&self, num_weeks: i64) -> Result<Vec<Application>> {

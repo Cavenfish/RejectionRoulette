@@ -15,9 +15,7 @@ pub fn stats() -> Result<()> {
 
     let stats = db.get_stats()?;
 
-    for (key, value) in stats {
-        println!("{}: {}", key, value);
-    }
+    println!("{}", stats.sankey);
 
     Ok(())
 }

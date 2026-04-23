@@ -11,6 +11,7 @@ body {
   background-color: theme.$primary-bg;
   color: theme.$primary-fg;
   font-family: theme.$font-family;
+  overflow-x: hidden;
 }
 
 button {

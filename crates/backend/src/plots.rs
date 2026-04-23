@@ -1,59 +1,100 @@
 use anyhow::Result;
-use kuva::render_sankey;
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
-use kuva::plot::{PieLabelPosition, PiePlot, SankeyPlot};
-use kuva::backend::svg::SvgBackend;
-use kuva::render::render::render_pie;
-use kuva::render::layout::Layout;
-use kuva::render::plots::Plot;
+use charming::{
+    Chart, ImageRenderer,
+    element::{Emphasis, EmphasisFocus, JsFunction, Tooltip, Trigger, TriggerOn},
+    series::Sankey,
+    theme::Theme,
+};
 
-pub fn stats_pie(stats: &BTreeMap<String, u32>) -> Result<String> {
-    let pie = PiePlot::new()
-        .with_slice("Pending", *stats.get("Pending").unwrap(), "yellow")
-        .with_slice("Rejected", *stats.get("Rejected").unwrap(), "red")
-        .with_slice("Ghost", *stats.get("Ghost").unwrap(), "grey")
-        .with_slice("Interview", *stats.get("Interview").unwrap(), "green")
-        .with_percent()
-        .with_label_position(PieLabelPosition::Outside);
+#[derive(Debug, Clone)]
+pub struct Stats {
+    pub sankey: StatusData,
+    pub resumes: HashMap<String, StatusData>,
+}
 
+#[derive(Debug, Clone)]
+pub struct StatusData {
+    pub ghost: u32,
+    pub reject: u32,
+    pub pending: u32,
+    pub interview: u32,
+}
 
-    let plots = vec![Plot::Pie(pie.clone())];
-    let layout = Layout::auto_from_plots(&plots);
-    let mut scene = render_pie(&pie, &layout).with_background(None);
-    
-    scene.text_color = Some("white".to_string());
-    
-    let svg = SvgBackend.render_scene(&scene);
+impl StatusData {
+    pub fn new() -> Self {
+        Self {
+            ghost: 0,
+            reject: 0,
+            pending: 0,
+            interview: 0,
+        }
+    }
 
-    std::fs::write("./tmp.svg", &svg)?;
+    pub fn add_one(&mut self, status: &str) {
+        match status {
+            "Pending" => self.pending += 1,
+            "Ghost" => self.ghost += 1,
+            "Rejected" => self.reject += 1,
+            "Interview" => self.interview += 1,
+            _ => {}
+        }
+    }
+
+    pub fn total(&self) -> u32 {
+        self.ghost + self.reject + self.pending + self.interview
+    }
+}
+
+impl std::fmt::Display for StatusData {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Pending: {}", self.pending)?;
+        writeln!(f, "Rejected: {}", self.reject)?;
+        writeln!(f, "Ghost: {}", self.ghost)?;
+        writeln!(f, "Interview: {}", self.interview)
+    }
+}
+
+pub fn stats_sankey(stats: &StatusData) -> Result<String> {
+    let labels: Vec<String> = vec![
+        "Applications".to_string(),
+        "Pending".to_string(),
+        "Ghost".to_string(),
+        "Interview".to_string(),
+        "Rejected".to_string(),
+    ];
+
+    let sankey = Sankey::new()
+        .emphasis(Emphasis::new().focus(EmphasisFocus::Adjacency))
+        .tooltip(
+            Tooltip::new()
+                .trigger(Trigger::Item)
+                .trigger_on(TriggerOn::Mousemove)
+                .value_formatter(JsFunction::new_with_args(
+                    "value",
+                    "return value.toFixed(1);",
+                )),
+        )
+        .data(labels)
+        .links(vec![
+            ("Applications", "Ghost", stats.ghost),
+            ("Applications", "Rejected", stats.reject),
+            ("Applications", "Pending", stats.pending),
+            ("Applications", "Interview", stats.interview),
+        ]);
+
+    let chart = Chart::new().series(sankey);
+
+    let mut renderer = ImageRenderer::new(550, 400).theme(Theme::Custom(
+        "idk",
+        include_str!("../../../assets/js/custom-theme.js"),
+    ));
+    let svg = renderer.render(&chart)?;
 
     Ok(svg)
 }
 
-pub fn stats_sankey(stats: &BTreeMap<String, u32>) -> Result<String> {
-    let sankey = SankeyPlot::new()
-        .with_node_color("Applications", "blue")
-        .with_node_color("Ghost", "grey")
-        .with_node_color("Pending", "yellow")
-        .with_node_color("Rejected", "red")
-        .with_node_color("Interview", "green")
-        .with_link_colored("Applications", "Ghost", *stats.get("Ghost").unwrap() as f64, "grey")
-        .with_link_colored("Applications", "Pending", *stats.get("Pending").unwrap() as f64, "yellow")
-        .with_link_colored("Applications", "Rejected", *stats.get("Rejected").unwrap() as f64, "red")
-        .with_link_colored("Applications", "Interview", *stats.get("Interview").unwrap() as f64, "green")
-        .with_per_link_colors();
-
-    let plots = vec![Plot::Sankey(sankey.clone())];
-    let layout = Layout::auto_from_plots(&plots);
-    let mut scene = render_sankey(&sankey, &layout).with_background(None);
-    scene.text_color = Some("white".to_string());
-    let svg = SvgBackend.render_scene(&scene);
-
-    std::fs::write("./tmp.svg", &svg)?;
-
-    Ok(svg)
+pub fn resumes_bar_plot() -> Result<String> {
+    Ok("asd".to_string())
 }
-
-// TODO:
-// - make sankey plot

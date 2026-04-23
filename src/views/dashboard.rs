@@ -8,7 +8,7 @@ pub fn Dashboard() -> Element {
     let upcoming = db.get_upcoming_interviews().unwrap();
     let offers = db.get_offers().unwrap();
     let stats = db.get_stats().unwrap();
-    let sankey = stats_sankey(&stats).unwrap();
+    let sankey = stats_sankey(&stats.sankey).unwrap();
 
     rsx! {
         div {
@@ -73,11 +73,12 @@ pub fn Dashboard() -> Element {
 
                 div {
                     class: "card summary-card",
-                    h4 { "Quick Stats" }
+                    h4 { "Resume Win Rates" }
 
-                    for (key,value) in stats.iter() {
-                        span {"{key}: {value}"}
+                    for (k,v) in stats.resumes.iter() {
+                        span { "{k}: {v.interview} of {v.total()}" }
                     }
+
                 }
 
                 div {
@@ -85,7 +86,7 @@ pub fn Dashboard() -> Element {
                     h4 { "Sankey Plot" }
 
                     div {
-                        class: "plot-placeholder",
+                        class: "sankey-plot",
                         title: "Sankey",
                         dangerous_inner_html: sankey
                     }
