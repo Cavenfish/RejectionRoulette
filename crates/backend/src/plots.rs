@@ -1,10 +1,10 @@
 use anyhow::Result;
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
 
 use charming::{
     Chart, ImageRenderer,
     component::{Calendar, VisualMap, VisualMapType},
-    datatype::{DataFrame, DataPoint},
+    datatype::DataFrame,
     element::{
         CoordinateSystem, Emphasis, EmphasisFocus, ItemStyle, JsFunction, Orient, Tooltip, Trigger,
         TriggerOn,
@@ -12,8 +12,6 @@ use charming::{
     series::{Heatmap, Sankey},
     theme::Theme,
 };
-
-use crate::database::Application;
 
 #[derive(Debug, Clone)]
 pub struct Stats {
