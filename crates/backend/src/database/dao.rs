@@ -108,6 +108,23 @@ impl AppDB {
         Ok(interviews)
     }
 
+    pub fn get_application_dates(&self) -> Result<Vec<String>> {
+        let mut stmt = self
+            .connection
+            .prepare("SELECT submit_date FROM Applications")?;
+
+        let mut rows = stmt.query([])?;
+
+        let mut values: Vec<String> = Vec::new();
+        while let Some(row) = rows.next()? {
+            // Extract the first column (index 0) as an i32
+            let value: String = row.get(0)?;
+            values.push(value);
+        }
+
+        Ok(values)
+    }
+
     pub fn delete(&self, id: i64) -> Result<()> {
         // Deletes cascading
         self.connection

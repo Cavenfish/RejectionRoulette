@@ -1,4 +1,7 @@
-use backend::{database::AppDB, plots::stats_sankey};
+use backend::{
+    database::AppDB,
+    plots::{activity_calendar, stats_sankey},
+};
 use dioxus::prelude::*;
 
 #[component]
@@ -9,6 +12,8 @@ pub fn Dashboard() -> Element {
     let offers = db.get_offers().unwrap();
     let stats = db.get_stats().unwrap();
     let sankey = stats_sankey(&stats.sankey).unwrap();
+    let dates = db.get_application_dates().unwrap();
+    let heatmap = activity_calendar(dates).unwrap();
 
     rsx! {
         div {
@@ -89,6 +94,18 @@ pub fn Dashboard() -> Element {
                         class: "sankey-plot",
                         title: "Sankey",
                         dangerous_inner_html: sankey
+                    }
+
+                }
+
+                div {
+                    class: "card plot-card-lg",
+                    h4 { "Application Heatmap" }
+
+                    div {
+                        class: "heatmap-plot",
+                        title: "Heatmap",
+                        dangerous_inner_html: heatmap
                     }
 
                 }
