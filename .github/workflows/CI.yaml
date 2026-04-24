@@ -30,8 +30,11 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Install cargo-binstall
+        run: cargo install cargo-binstall
+
       - name: Install Dioxus CLI
-        run: cargo install dioxus-cli
+        run: cargo binstall dioxus-cli
 
       - name: Run Dioxus Bundle
         run: dx bundle --release --desktop
