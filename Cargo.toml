@@ -17,7 +17,7 @@ serde = { version = "1.0.228", features = ["derive"] }
 anyhow.workspace = true
 backend.workspace = true
 chrono.workspace = true
-dioxus = { version = "0.7.1", features = ["router", "html"] }
+dioxus = { version = "0.7.6", features = ["router", "html"] }
 open = "5.3.3"
 serde.workspace = true
 
