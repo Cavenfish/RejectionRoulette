@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs, path::PathBuf};
 
 use anyhow::Result;
-use chrono::{Local, NaiveDate};
+use chrono::{Datelike, Local, NaiveDate};
 use dirs::data_dir;
 use rusqlite::{Connection, params};
 
@@ -45,9 +45,9 @@ impl AppDB {
 
     pub fn scan_for_ghosts(&self, num_weeks: i64) -> Result<()> {
         let mut applications = self.get_applications()?;
+        let today = Local::now().date_naive();
 
         for app in applications.iter_mut() {
-            let today = Local::now().date_naive();
             let sent = NaiveDate::parse_from_str(&app.submit_date, "%Y/%m/%d")?;
 
             if today.signed_duration_since(sent).num_weeks() >= num_weeks
@@ -60,13 +60,41 @@ impl AppDB {
         Ok(())
     }
 
+    pub fn get_date_range(&self) -> Result<(String, String)> {
+        let this_year = Local::now().date_naive().year();
+        let first: String = self.connection.query_one(
+            "SELECT submit_date FROM Applications WHERE id=1",
+            [],
+            |r| r.get(0),
+        )?;
+
+        let start = first
+            .splitn(3, "/")
+            .enumerate()
+            .map(|(i, value)| {
+                if i == 2 {
+                    "01".to_string()
+                } else {
+                    value.to_string()
+                }
+            })
+            .collect::<Vec<String>>()
+            .join("-");
+
+        let end = format!("{}-12-31", this_year);
+
+        Ok((start, end))
+    }
+
     pub fn get_stats(&self) -> Result<Stats> {
         let applications = self.get_applications()?;
         let mut sankey = StatusData::new();
         let mut resumes: HashMap<String, StatusData> = HashMap::new();
+        let mut dates: HashMap<String, i64> = HashMap::new();
 
         for app in applications.iter() {
             sankey.add_one(&app.status);
+            *dates.entry(app.submit_date.clone()).or_insert(1) += 1;
 
             if let Some(name) = &app.resume {
                 if let Some(data) = resumes.get_mut(name) {
@@ -78,7 +106,11 @@ impl AppDB {
             }
         }
 
-        Ok(Stats { sankey, resumes })
+        Ok(Stats {
+            sankey,
+            resumes,
+            dates,
+        })
     }
 
     pub fn get_ghost_alerts(&self, num_weeks: i64) -> Result<Vec<Application>> {
@@ -106,23 +138,6 @@ impl AppDB {
         });
 
         Ok(interviews)
-    }
-
-    pub fn get_application_dates(&self) -> Result<Vec<String>> {
-        let mut stmt = self
-            .connection
-            .prepare("SELECT submit_date FROM Applications")?;
-
-        let mut rows = stmt.query([])?;
-
-        let mut values: Vec<String> = Vec::new();
-        while let Some(row) = rows.next()? {
-            // Extract the first column (index 0) as an i32
-            let value: String = row.get(0)?;
-            values.push(value);
-        }
-
-        Ok(values)
     }
 
     pub fn delete(&self, id: i64) -> Result<()> {

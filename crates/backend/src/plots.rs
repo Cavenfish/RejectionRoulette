@@ -3,12 +3,9 @@ use std::collections::HashMap;
 
 use charming::{
     Chart, ImageRenderer,
-    component::{Calendar, VisualMap, VisualMapType},
+    component::{Calendar, Legend, VisualMap, VisualMapType},
     datatype::DataFrame,
-    element::{
-        CoordinateSystem, Emphasis, EmphasisFocus, ItemStyle, JsFunction, Orient, Tooltip, Trigger,
-        TriggerOn,
-    },
+    element::{CoordinateSystem, ItemStyle, Orient},
     series::{Heatmap, Sankey},
     theme::Theme,
 };
@@ -17,6 +14,7 @@ use charming::{
 pub struct Stats {
     pub sankey: StatusData,
     pub resumes: HashMap<String, StatusData>,
+    pub dates: HashMap<String, i64>,
 }
 
 #[derive(Debug, Clone)]
@@ -70,24 +68,12 @@ pub fn stats_sankey(stats: &StatusData) -> Result<String> {
         "Rejected".to_string(),
     ];
 
-    let sankey = Sankey::new()
-        .emphasis(Emphasis::new().focus(EmphasisFocus::Adjacency))
-        .tooltip(
-            Tooltip::new()
-                .trigger(Trigger::Item)
-                .trigger_on(TriggerOn::Mousemove)
-                .value_formatter(JsFunction::new_with_args(
-                    "value",
-                    "return value.toFixed(1);",
-                )),
-        )
-        .data(labels)
-        .links(vec![
-            ("Applications", "Ghost", stats.ghost),
-            ("Applications", "Rejected", stats.reject),
-            ("Applications", "Pending", stats.pending),
-            ("Applications", "Interview", stats.interview),
-        ]);
+    let sankey = Sankey::new().data(labels).links(vec![
+        ("Applications", "Ghost", stats.ghost),
+        ("Applications", "Rejected", stats.reject),
+        ("Applications", "Pending", stats.pending),
+        ("Applications", "Interview", stats.interview),
+    ]);
 
     let chart = Chart::new().series(sankey);
 
@@ -100,13 +86,10 @@ pub fn stats_sankey(stats: &StatusData) -> Result<String> {
     Ok(svg)
 }
 
-pub fn activity_calendar(dates: Vec<String>) -> Result<String> {
-    let mut counts: HashMap<String, i64> = HashMap::new();
-
-    for date in dates.iter() {
-        *counts.entry(date.clone()).or_insert(1) += 1;
-    }
-
+pub fn activity_calendar(
+    date_range: (String, String),
+    counts: HashMap<String, i64>,
+) -> Result<String> {
     let mut data: Vec<DataFrame> = Vec::new();
 
     for (key, &value) in counts.iter() {
@@ -117,25 +100,26 @@ pub fn activity_calendar(dates: Vec<String>) -> Result<String> {
         .visual_map(
             VisualMap::new()
                 .min(0)
-                .max(100)
-                .type_(VisualMapType::Piecewise)
-                .orient(Orient::Horizontal)
-                .left("center")
-                .top(65),
+                .max(15)
+                .type_(VisualMapType::Continuous),
         )
         .calendar(
             Calendar::new()
-                .top(120)
-                .range(("2026-01-01", "2026-05-01"))
-                .item_style(ItemStyle::new().border_width(0.5)),
+                .top(20)
+                .height("auto")
+                .width("auto")
+                .range(date_range)
+                .item_style(ItemStyle::new().border_width(0.25))
+                .orient(Orient::Horizontal),
         )
         .series(
             Heatmap::new()
                 .coordinate_system(CoordinateSystem::Calendar)
                 .data(data),
-        );
+        )
+        .legend(Legend::new());
 
-    let mut renderer = ImageRenderer::new(550, 400).theme(Theme::Custom(
+    let mut renderer = ImageRenderer::new(800, 120).theme(Theme::Custom(
         "idk",
         include_str!("../../../assets/js/custom-theme.js"),
     ));

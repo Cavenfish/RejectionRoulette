@@ -12,8 +12,8 @@ pub fn Dashboard() -> Element {
     let offers = db.get_offers().unwrap();
     let stats = db.get_stats().unwrap();
     let sankey = stats_sankey(&stats.sankey).unwrap();
-    let dates = db.get_application_dates().unwrap();
-    let heatmap = activity_calendar(dates).unwrap();
+    let date_range = db.get_date_range().unwrap();
+    let heatmap = activity_calendar(date_range, stats.dates).unwrap();
 
     rsx! {
         div {
