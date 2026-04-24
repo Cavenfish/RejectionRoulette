@@ -31,7 +31,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install cargo-binstall
-        run: cargo install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
 
       - name: Install Dioxus CLI
         run: cargo binstall dioxus-cli
