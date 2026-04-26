@@ -19,6 +19,7 @@ backend.workspace = true
 chrono.workspace = true
 dioxus = { version = "0.7.6", features = ["router", "html"] }
 open = "5.3.3"
+rfd = "0.17.2"
 serde.workspace = true
 
 [features]

@@ -1,4 +1,4 @@
-use backend::settings::AppSettings;
+use backend::{database::AppDB, export::export_data, settings::AppSettings};
 use dioxus::{document::eval, prelude::*};
 
 #[component]
@@ -87,11 +87,24 @@ pub fn SettingsPage() -> Element {
                         div {
                             class: "info",
                             label { "Export Data" }
-                            span { "Download your application history as a CSV." }
+                            span { "Export all tables to a TOML file" }
                         }
                         button {
                             class: "basic-btn",
-                            "Export CSV"
+                            onclick: move |_| {
+                                let path = rfd::FileDialog::new()
+                                    .add_filter("TOML File", &["toml"])
+                                    .set_file_name("data.toml")
+                                    .save_file();
+
+                                if let Some(path) = path {
+                                    let db = AppDB::new();
+                                    let data = db.get_all_tables().unwrap();
+
+                                    export_data(data, &path).unwrap();
+                                }
+                            },
+                            "Export Data"
                         }
                     }
                 }

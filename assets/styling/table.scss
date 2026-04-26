@@ -15,39 +15,44 @@
   }
 }
 
-.new-item {
-  button {
-    // Sizing and Shape
-    padding: 8px 16px; // Better than fixed width/height for text
-    min-width: 80px;
-    border-radius: 6px;
-    border: 1px solid theme.$accent-bg;
+.table-btns {
+  display: flex;
+  justify-content: right;
 
-    // Colors
-    color: theme.$primary-fg;
-    background-color: theme.$secondary-bg;
+  .new-item {
+    padding-left: 10px;
+    button {
+      // Sizing and Shape
+      padding: 8px 16px; // Better than fixed width/height for text
+      min-width: 80px;
+      border-radius: 6px;
+      border: 1px solid theme.$accent-bg;
 
-    // Typography
-    font-size: theme.$font-size-sm;
-    font-weight: 500;
-    cursor: pointer;
+      // Colors
+      color: theme.$primary-fg;
+      background-color: theme.$secondary-bg;
 
-    // Animation
-    transition: all 0.2s ease;
+      // Typography
+      font-size: theme.$font-size-sm;
+      font-weight: 500;
+      cursor: pointer;
 
-    &:hover {
-      background-color: theme.$accent-bg;
-      border-color: theme.$accent; // Highlight border on hover
-      transform: translateY(-1px); // Subtle lift
-    }
+      // Animation
+      transition: all 0.2s ease;
 
-    &:active {
-      transform: translateY(0); // Press effect
-      background-color: theme.$accent-bg;
+      &:hover {
+        background-color: theme.$accent-bg;
+        border-color: theme.$accent; // Highlight border on hover
+        transform: translateY(-1px); // Subtle lift
+      }
+
+      &:active {
+        transform: translateY(0); // Press effect
+        background-color: theme.$accent-bg;
+      }
     }
   }
 }
-
 .apps-table {
   width: 100%;
   overflow-x: auto; // Ensures responsiveness if columns overflow

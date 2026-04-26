@@ -2,6 +2,7 @@ use std::{fs, path::PathBuf};
 
 use anyhow::Result;
 use rusqlite::{Connection, Row, params};
+use serde::{Deserialize, Serialize};
 
 use crate::utils::compute_file_hash;
 
@@ -44,7 +45,7 @@ impl RowInsert for NewApplication {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Application {
     pub id: i64,
     pub resume_id: Option<i64>,
@@ -97,7 +98,7 @@ impl RowInsert for NewInterview {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Interview {
     pub id: i64,
     pub application_id: i64,
@@ -152,7 +153,7 @@ impl RowInsert for NewOffer {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Offer {
     pub id: i64,
     pub application_id: i64,
@@ -208,7 +209,7 @@ impl RowInsert for NewResume {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Resume {
     pub id: i64,
     pub name: String,
@@ -223,6 +224,14 @@ impl RowRead for Resume {
             hash: row.get(2)?,
         })
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AllTables {
+    pub applications: Vec<Application>,
+    pub interviews: Vec<Interview>,
+    pub offers: Vec<Offer>,
+    pub resumes: Vec<Resume>,
 }
 
 pub fn init_db(conn: &Connection) -> Result<()> {

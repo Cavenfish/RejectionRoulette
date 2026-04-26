@@ -10,7 +10,7 @@ use crate::{
     plots::{Stats, StatusData},
 };
 
-use super::schema::{Application, Interview, Offer, RowInsert, RowRead, init_db};
+use super::schema::{AllTables, Application, Interview, Offer, RowInsert, RowRead, init_db};
 
 #[derive(Debug)]
 pub struct AppDB {
@@ -41,6 +41,20 @@ impl AppDB {
             connection,
             resume_dir,
         }
+    }
+
+    pub fn get_all_tables(&self) -> Result<AllTables> {
+        let applications = self.get_applications()?;
+        let interviews = self.get_interviews()?;
+        let offers = self.get_offers()?;
+        let resumes = self.get_resumes()?;
+
+        Ok(AllTables {
+            applications,
+            interviews,
+            offers,
+            resumes,
+        })
     }
 
     pub fn scan_for_ghosts(&self, num_weeks: i64) -> Result<()> {
