@@ -1,6 +1,6 @@
 use backend::{
     database::AppDB,
-    plots::{activity_calendar, stats_sankey},
+    plots::{activity_calendar, resume_pie_chart, stats_sankey},
     settings::AppSettings,
 };
 use dioxus::prelude::*;
@@ -80,14 +80,17 @@ pub fn Dashboard() -> Element {
                         let sankey = stats_sankey(&stats.sankey).unwrap();
                         let date_range = db.get_date_range().unwrap();
                         let heatmap = activity_calendar(date_range, stats.dates).unwrap();
+                        let resume_pie = resume_pie_chart(stats.resumes).unwrap();
 
                         rsx! {
                             div {
                                 class: "card summary-card",
-                                h4 { "Resume Win Rates" }
+                                h4 { "Interviews by Resume" }
 
-                                for (k,v) in stats.resumes.iter() {
-                                    span { "{k}: {v.interview} of {v.total()}" }
+                                div {
+                                    class: "resume-plot",
+                                    title: "Resume Pie",
+                                    dangerous_inner_html: resume_pie
                                 }
 
                             }

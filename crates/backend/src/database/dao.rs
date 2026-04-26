@@ -103,19 +103,18 @@ impl AppDB {
     pub fn get_stats(&self) -> Result<Stats> {
         let applications = self.get_applications()?;
         let mut sankey = StatusData::new();
-        let mut resumes: HashMap<String, StatusData> = HashMap::new();
+        let mut resumes: HashMap<String, i64> = HashMap::new();
         let mut dates: HashMap<String, i64> = HashMap::new();
 
         for app in applications.iter() {
             sankey.add_one(&app.status);
             *dates.entry(app.submit_date.clone()).or_insert(1) += 1;
 
-            if let Some(name) = &app.resume {
-                if let Some(data) = resumes.get_mut(name) {
-                    data.add_one(&app.status);
+            if app.status.as_str() == "Interview" {
+                if let Some(name) = &app.resume {
+                    *resumes.entry(name.clone()).or_insert(1) += 1;
                 } else {
-                    let new = StatusData::new();
-                    resumes.insert(name.to_string(), new);
+                    *resumes.entry("Unknown".to_string()).or_insert(1) += 1;
                 }
             }
         }

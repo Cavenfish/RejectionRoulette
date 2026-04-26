@@ -5,15 +5,15 @@ use charming::{
     Chart, ImageRenderer,
     component::{Calendar, Legend, VisualMap, VisualMapType},
     datatype::DataFrame,
-    element::{CoordinateSystem, ItemStyle, Orient},
-    series::{Heatmap, Sankey},
+    element::{CoordinateSystem, Emphasis, ItemStyle, Orient},
+    series::{Heatmap, Pie, Sankey},
     theme::Theme,
 };
 
 #[derive(Debug, Clone)]
 pub struct Stats {
     pub sankey: StatusData,
-    pub resumes: HashMap<String, StatusData>,
+    pub resumes: HashMap<String, i64>,
     pub dates: HashMap<String, i64>,
 }
 
@@ -120,6 +120,33 @@ pub fn activity_calendar(
         .legend(Legend::new());
 
     let mut renderer = ImageRenderer::new(800, 120).theme(Theme::Custom(
+        "idk",
+        include_str!("../../../assets/js/custom-theme.js"),
+    ));
+    let svg = renderer.render(&chart)?;
+
+    Ok(svg)
+}
+
+pub fn resume_pie_chart(counts: HashMap<String, i64>) -> Result<String> {
+    let mut data = Vec::new();
+
+    for (key, &value) in counts.iter() {
+        data.push((value, key.clone()));
+    }
+
+    let chart = Chart::new().series(
+        Pie::new().data(data).emphasis(
+            Emphasis::new().item_style(
+                ItemStyle::new()
+                    .shadow_blur(10)
+                    .shadow_offset_x(0)
+                    .shadow_color("rgba(0, 0, 0, 0.5)"),
+            ),
+        ),
+    );
+
+    let mut renderer = ImageRenderer::new(400, 300).theme(Theme::Custom(
         "idk",
         include_str!("../../../assets/js/custom-theme.js"),
     ));
