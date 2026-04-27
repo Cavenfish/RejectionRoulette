@@ -6,7 +6,7 @@ use charming::{
     component::{Calendar, Legend, VisualMap, VisualMapType},
     datatype::DataFrame,
     element::{CoordinateSystem, Emphasis, ItemStyle, Orient},
-    series::{Heatmap, Pie, Sankey},
+    series::{Heatmap, Pie, Sankey, SankeyNode},
     theme::Theme,
 };
 
@@ -60,25 +60,23 @@ impl std::fmt::Display for StatusData {
 }
 
 pub fn stats_sankey(stats: &StatusData) -> Result<String> {
-    let labels: Vec<String> = vec![
-        "Applications".to_string(),
-        "Pending".to_string(),
-        "Ghost".to_string(),
-        "Interview".to_string(),
-        "Rejected".to_string(),
+    let labels = vec![
+        SankeyNode::new("Applications").item_style(ItemStyle::new().color("#0037ff")),
+        SankeyNode::new("Pending").item_style(ItemStyle::new().color("#eeff00")),
+        SankeyNode::new("Ghost").item_style(ItemStyle::new().color("#acacac")),
+        SankeyNode::new("Interview").item_style(ItemStyle::new().color("#26ff00")),
+        SankeyNode::new("Rejected").item_style(ItemStyle::new().color("#ff0000")),
     ];
 
-    let sankey = Sankey::new().data(labels).links(vec![
+    let chart = Chart::new().series(Sankey::new().data(labels).links(vec![
         ("Applications", "Ghost", stats.ghost),
         ("Applications", "Rejected", stats.reject),
         ("Applications", "Pending", stats.pending),
         ("Applications", "Interview", stats.interview),
-    ]);
-
-    let chart = Chart::new().series(sankey);
+    ]));
 
     let mut renderer = ImageRenderer::new(550, 400).theme(Theme::Custom(
-        "idk",
+        "RejectionRoulette",
         include_str!("../../../assets/js/custom-theme.js"),
     ));
     let svg = renderer.render(&chart)?;
@@ -120,7 +118,7 @@ pub fn activity_calendar(
         .legend(Legend::new());
 
     let mut renderer = ImageRenderer::new(800, 120).theme(Theme::Custom(
-        "idk",
+        "RejectionRoulette",
         include_str!("../../../assets/js/custom-theme.js"),
     ));
     let svg = renderer.render(&chart)?;
@@ -147,7 +145,7 @@ pub fn resume_pie_chart(counts: HashMap<String, i64>) -> Result<String> {
     );
 
     let mut renderer = ImageRenderer::new(400, 300).theme(Theme::Custom(
-        "idk",
+        "RejectionRoulette",
         include_str!("../../../assets/js/custom-theme.js"),
     ));
     let svg = renderer.render(&chart)?;

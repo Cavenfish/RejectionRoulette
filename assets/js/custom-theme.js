@@ -19,14 +19,14 @@
         log('ECharts is not Loaded');
         return;
     }
-    echarts.registerTheme('idk', {
+    echarts.registerTheme('RejectionRoulette', {
         "color": [
-            "#516b91",
-            "#59c4e6",
-            "#edafda",
-            "#93b7e3",
-            "#a5e7f0",
-            "#cbb0e3"
+            "var(--fg-secondary)",
+            "var(--accent-color)",
+            "var(--fg-muted)",
+            "var(--success)",
+            "var(--error)",
+            "var(--warning)"
         ],
         "visualMap": {
             "type": "continuous",
@@ -34,23 +34,12 @@
             "color": ["#f809ec", "#ff87f9", "#ffffff"]
         },
         "backgroundColor": "rgba(0,0,0,0)",
-        "textStyle": {
-            "color": "#21dcf5"
-        },
         "label": {
-            "color": "#67ff02"
-        },
-        "title": {
-            "textStyle": {
-                "color": "#67ff02"
-            },
-            "subtextStyle": {
-                "color": "#67ff02"
-            }
+            "color": "var(--fg-primary)"
         },
         "legend": {
             "textStyle": {
-                "color": "#67ff02"
+                "color": "var(--fg-primary)"
             }
         },
         "bar": {
@@ -79,15 +68,15 @@
         "calendar": {
             "yearLabel": {
                 "show": true,
-                "color": "#67ff02",
+                "color": "var(--fg-primary)",
             },
             "monthLabel": {
                 "show": true,
-                "color": "#67ff02",
+                "color": "var(--fg-primary)",
             },
             "dayLabel": {
                 "show": true,
-                "color": "#67ff02",
+                "color": "var(--fg-primary)",
             },
         },
         "categoryAxis": {
