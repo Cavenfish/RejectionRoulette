@@ -67,6 +67,6 @@ jobs:
           files: |
             linux-bundle/*.deb
             windows-bundle/*.msi
-            macos-bundle/*.app
+            macos-bundle/*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
