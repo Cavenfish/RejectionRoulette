@@ -1,4 +1,7 @@
-use backend::database::{Application, Interview, Offer};
+use backend::{
+    database::{Application, Interview, Offer},
+    filter::FilterCriteria,
+};
 use dioxus::prelude::*;
 
 use super::{EditApplication, EditInterview, EditOffer, ModalOverlay};
@@ -14,7 +17,10 @@ fn get_status_color(status: &str) -> &'static str {
 }
 
 #[component]
-pub fn ApplicationsTable(table: Signal<Vec<Application>>) -> Element {
+pub fn ApplicationsTable(
+    criteria: Signal<FilterCriteria>,
+    table: Signal<Vec<Application>>,
+) -> Element {
     let mut selected_item = use_signal(|| None::<Application>);
 
     rsx! {
@@ -33,7 +39,7 @@ pub fn ApplicationsTable(table: Signal<Vec<Application>>) -> Element {
                     }
                 }
                 tbody {
-                    for item in table.read().iter().rev() {
+                    for item in criteria.read().filter_applications(&table.read()) {
                         {
                             let current_item = item.clone();
                             rsx! {
@@ -77,7 +83,7 @@ pub fn ApplicationsTable(table: Signal<Vec<Application>>) -> Element {
 }
 
 #[component]
-pub fn InterviewsTable(table: Signal<Vec<Interview>>) -> Element {
+pub fn InterviewsTable(criteria: Signal<FilterCriteria>, table: Signal<Vec<Interview>>) -> Element {
     let mut selected_item = use_signal(|| None::<Interview>);
 
     rsx! {
@@ -95,7 +101,7 @@ pub fn InterviewsTable(table: Signal<Vec<Interview>>) -> Element {
                     }
                 }
                 tbody {
-                    for item in table.read().iter().rev() {
+                    for item in criteria.read().filter_interviews(&table.read()) {
                         {
                             let current_item = item.clone();
 

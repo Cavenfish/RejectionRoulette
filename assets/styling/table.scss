@@ -15,6 +15,35 @@
   }
 }
 
+.filter-input {
+  // Positioning within your existing header flexbox
+  flex-grow: 1;
+  margin: 0 2rem; // Spacing between title and buttons
+  max-width: 500px;
+  min-width: 150px;
+
+  // Visuals
+  padding: 6px 12px;
+  background-color: theme.$secondary-bg;
+  color: theme.$primary-fg;
+  border: 1px solid theme.$secondary-fg;
+  border-radius: 4px;
+
+  // Text Styling
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85rem;
+
+  // Transition for that "Active" feel
+  transition: all 0.15s ease-in-out;
+
+  &:focus {
+    outline: none;
+    border-color: theme.$accent;
+    background-color: theme.$primary-bg;
+    box-shadow: 0 0 0 2px rgba(theme.$accent, 0.15);
+  }
+}
+
 .table-btns {
   display: flex;
   justify-content: right;

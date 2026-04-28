@@ -4,6 +4,7 @@ use dirs::data_dir;
 
 pub mod database;
 pub mod export;
+pub mod filter;
 pub mod plots;
 pub mod settings;
 mod utils;

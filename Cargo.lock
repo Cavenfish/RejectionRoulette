@@ -243,6 +243,7 @@ dependencies = [
  "chrono",
  "csv",
  "dirs",
+ "regex",
  "rusqlite",
  "serde",
  "sha2 0.11.0",

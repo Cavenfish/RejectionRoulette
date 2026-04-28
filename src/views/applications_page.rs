@@ -1,4 +1,4 @@
-use backend::{database::AppDB, export::export_table};
+use backend::{database::AppDB, export::export_table, filter::FilterCriteria};
 use dioxus::prelude::*;
 
 use crate::components::{AddApplicationForm, ApplicationsTable, ModalOverlay};
@@ -8,12 +8,22 @@ pub fn ApplicationsPage() -> Element {
     let db = AppDB::new();
 
     let mut new_entry_flag = use_signal(|| false);
+    let mut criteria = use_signal(|| FilterCriteria::default());
     let table = use_signal(|| db.get_applications().unwrap());
 
     rsx! {
         div {
             class: "table-header",
             h2 { "Applications" }
+
+            input {
+                r#type: "text",
+                class: "filter-input",
+                placeholder: "Filter table (e.g. company: Google role: 'Software Engineer')",
+                oninput: move |evt| {
+                    criteria.set(FilterCriteria::parse(&evt.value()));
+                }
+            }
 
             div {
                 class: "table-btns",
@@ -51,6 +61,6 @@ pub fn ApplicationsPage() -> Element {
                 inner: rsx!{AddApplicationForm {table, on_submit: move |_| new_entry_flag.set(false)}}
             }
         }
-        ApplicationsTable { table }
+        ApplicationsTable { criteria, table }
     }
 }
