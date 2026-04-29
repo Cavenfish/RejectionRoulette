@@ -26,7 +26,6 @@ pub fn ResumesPage() -> Element {
                     div {
                         class: "new-item",
                         button {
-                            class: "btn-submit",
                             onclick: move |_| new_add.set(true),
                             "Add New"
                         }
