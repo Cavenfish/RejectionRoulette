@@ -108,13 +108,13 @@ impl AppDB {
 
         for app in applications.iter() {
             sankey.add_one(&app.status);
-            *dates.entry(app.submit_date.clone()).or_insert(1) += 1;
+            *dates.entry(app.submit_date.clone()).or_insert(0) += 1;
 
             if app.status.as_str() == "Interview" {
                 if let Some(name) = &app.resume {
-                    *resumes.entry(name.clone()).or_insert(1) += 1;
+                    *resumes.entry(name.clone()).or_insert(0) += 1;
                 } else {
-                    *resumes.entry("Unknown".to_string()).or_insert(1) += 1;
+                    *resumes.entry("Unknown".to_string()).or_insert(0) += 1;
                 }
             }
         }
