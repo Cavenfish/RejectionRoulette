@@ -12,6 +12,7 @@ use views::{
 };
 
 const MAIN_CSS: Asset = asset!("/assets/styling/main.scss");
+const ECHARTS: Asset = asset!("/assets/js/echarts.min.js");
 
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
@@ -69,6 +70,7 @@ fn App() -> Element {
 
     rsx! {
         document::Link { rel: "stylesheet", href: MAIN_CSS }
+        document::Script { src: ECHARTS }
 
         Router::<Route> {}
     }

@@ -19,14 +19,33 @@
         log('ECharts is not Loaded');
         return;
     }
-    echarts.registerTheme('RejectionRoulette', {
+    const style = getComputedStyle(document.documentElement);
+    
+    // Resolve the CSS variables into real colors
+    const colors = {
+        bgPrimary: style.getPropertyValue('--bg-primary').trim(),
+        bgSecondary: style.getPropertyValue('--bg-secondary').trim(),
+        bgAccent: style.getPropertyValue('--bg-accent').trim(),
+
+        fgPrimary: style.getPropertyValue('--fg-primary').trim(),
+        fgSecondary: style.getPropertyValue('--fg-secondary').trim(),
+        fgMuted: style.getPropertyValue('--fg-muted').trim(),
+
+        accent: style.getPropertyValue('--accent-color').trim(),
+        success: style.getPropertyValue('--success').trim(),
+        error: style.getPropertyValue('--error').trim(),
+        warning: style.getPropertyValue('--warning').trim()
+
+    };
+
+    echarts.registerTheme('Rejection Roulette', {
         "color": [
-            "var(--fg-secondary)",
-            "var(--accent-color)",
-            "var(--fg-muted)",
-            "var(--success)",
-            "var(--error)",
-            "var(--warning)"
+            colors.fgSecondary,
+            colors.accent,
+            colors.fgMuted,
+            colors.success,
+            colors.error,
+            colors.warning
         ],
         "visualMap": {
             "type": "continuous",
@@ -35,11 +54,11 @@
         },
         "backgroundColor": "rgba(0,0,0,0)",
         "label": {
-            "color": "var(--fg-primary)"
+            "color": colors.fgPrimary
         },
         "legend": {
             "textStyle": {
-                "color": "var(--fg-primary)"
+                "color": colors.fgPrimary
             }
         },
         "bar": {
@@ -68,15 +87,15 @@
         "calendar": {
             "yearLabel": {
                 "show": true,
-                "color": "var(--fg-primary)",
+                "color": colors.fgPrimary,
             },
             "monthLabel": {
                 "show": true,
-                "color": "var(--fg-primary)",
+                "color": colors.fgPrimary,
             },
             "dayLabel": {
                 "show": true,
-                "color": "var(--fg-primary)",
+                "color": colors.fgPrimary,
             },
         },
         "categoryAxis": {

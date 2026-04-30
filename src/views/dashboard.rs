@@ -3,7 +3,7 @@ use backend::{
     plots::{activity_calendar, resume_pie_chart, stats_sankey},
     settings::AppSettings,
 };
-use dioxus::prelude::*;
+use dioxus::{document::eval, prelude::*};
 
 #[component]
 pub fn Dashboard() -> Element {
@@ -84,15 +84,20 @@ pub fn Dashboard() -> Element {
 
                         rsx! {
                             div {
-                                class: "card summary-card",
+                                class: "card plot-card-sm",
                                 h4 { "Interviews by Resume" }
 
                                 div {
-                                    class: "resume-plot",
-                                    title: "Resume Pie",
-                                    dangerous_inner_html: resume_pie
+                                    class: "chart-container",
+                                    div {
+                                        id: "pie",
+                                        class: "small-plot",
+                                        title: "Resume Pie",
+                                        onmounted: move |_| {
+                                            eval(&resume_pie);
+                                        }
+                                    }
                                 }
-
                             }
 
                             div {
@@ -100,10 +105,17 @@ pub fn Dashboard() -> Element {
                                 h4 { "Sankey Plot" }
 
                                 div {
-                                    class: "sankey-plot",
-                                    title: "Sankey",
-                                    dangerous_inner_html: sankey
+                                    class: "chart-container",
+                                    div {
+                                        id: "sankey",
+                                        class: "large-plot",
+                                        title: "Sankey",
+                                        onmounted: move |_| {
+                                            eval(&sankey);
+                                        }
+                                    }
                                 }
+
 
                             }
 
@@ -112,11 +124,16 @@ pub fn Dashboard() -> Element {
                                 h4 { "Application Heatmap" }
 
                                 div {
-                                    class: "heatmap-plot",
-                                    title: "Heatmap",
-                                    dangerous_inner_html: heatmap
+                                    class: "chart-container",
+                                    div {
+                                        id: "calendar",
+                                        class: "large-plot",
+                                        title: "Calendar Heatmap",
+                                        onmounted: move |_| {
+                                            eval(&heatmap);
+                                        }
+                                    }
                                 }
-
                             }
                         }
                     }

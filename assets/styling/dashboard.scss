@@ -82,9 +82,9 @@
   }
 
   // Mid Plots (Also Full Width if desired, or can be half)
-  .plot-card-md {
-    grid-column: span 2;
-    min-height: 300px;
+  .plot-card-sm {
+    grid-column: span 1;
+    min-height: 200px;
   }
 
   // Specific half-width cards (Ghost, Interviews, Offers)
@@ -116,5 +116,30 @@
   .event-card {
     @extend .summary-card;
     border-top: 4px solid theme.$accent;
+  }
+}
+
+// Base container for all charts
+.chart-container {
+  width: 100%;
+  background-color: theme.$secondary-bg;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  // 1. Large "Hero" Plot (e.g., Application Timeline)
+  .large-plot {
+    grid-column: 1 / -1; // Spans full width of the dashboard grid
+    aspect-ratio: 21 / 9; // Cinematic wide aspect
+  }
+
+  // 2. Small "Metric" Plot (e.g., Status Pie Chart)
+  .small-plot {
+    grid-column: span 1;
+    aspect-ratio: 4 / 3; // Standard boxy aspect
   }
 }
