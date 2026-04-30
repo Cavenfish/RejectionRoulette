@@ -5,7 +5,7 @@ use charming::{
     Chart,
     component::{Calendar, Legend, VisualMap, VisualMapType},
     datatype::DataFrame,
-    element::{CoordinateSystem, Emphasis, ItemStyle, Orient},
+    element::{CoordinateSystem, Emphasis, ItemStyle, Orient, Tooltip, Trigger, TriggerOn},
     series::{Heatmap, Pie, Sankey, SankeyNode},
 };
 
@@ -112,7 +112,8 @@ pub fn activity_calendar(
             VisualMap::new()
                 .min(0)
                 .max(15)
-                .type_(VisualMapType::Continuous),
+                .type_(VisualMapType::Continuous)
+                .orient(Orient::Horizontal),
         )
         .calendar(
             Calendar::new()
@@ -128,6 +129,11 @@ pub fn activity_calendar(
                 .coordinate_system(CoordinateSystem::Calendar)
                 .data(data),
         )
+        .tooltip(
+            Tooltip::new()
+                .trigger(Trigger::Item)
+                .trigger_on(TriggerOn::Mousemove),
+        )
         .legend(Legend::new());
 
     get_mount_code("calendar", &chart)
@@ -140,16 +146,22 @@ pub fn resume_pie_chart(counts: HashMap<String, i64>) -> Result<String> {
         data.push((value, key.clone()));
     }
 
-    let chart = Chart::new().series(
-        Pie::new().data(data).emphasis(
-            Emphasis::new().item_style(
-                ItemStyle::new()
-                    .shadow_blur(10)
-                    .shadow_offset_x(0)
-                    .shadow_color("rgba(0, 0, 0, 0.5)"),
+    let chart = Chart::new()
+        .series(
+            Pie::new().data(data).emphasis(
+                Emphasis::new().item_style(
+                    ItemStyle::new()
+                        .shadow_blur(10)
+                        .shadow_offset_x(0)
+                        .shadow_color("rgba(0, 0, 0, 0.5)"),
+                ),
             ),
-        ),
-    );
+        )
+        .tooltip(
+            Tooltip::new()
+                .trigger(Trigger::Item)
+                .trigger_on(TriggerOn::Mousemove),
+        );
 
     get_mount_code("pie", &chart)
 }

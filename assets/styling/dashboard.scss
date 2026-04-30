@@ -131,15 +131,17 @@
     transform 0.2s ease,
     box-shadow 0.2s ease;
 
-  // 1. Large "Hero" Plot (e.g., Application Timeline)
-  .large-plot {
-    grid-column: 1 / -1; // Spans full width of the dashboard grid
-    aspect-ratio: 21 / 9; // Cinematic wide aspect
+  // sankey
+  .sankey {
+    aspect-ratio: 21 / 9;
   }
 
-  // 2. Small "Metric" Plot (e.g., Status Pie Chart)
-  .small-plot {
-    grid-column: span 1;
-    aspect-ratio: 4 / 3; // Standard boxy aspect
+  .yearly-calendar {
+    width: 90%;
+    aspect-ratio: 8;
+  }
+
+  .pie {
+    aspect-ratio: 1;
   }
 }

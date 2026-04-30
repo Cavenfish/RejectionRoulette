@@ -91,7 +91,7 @@ pub fn Dashboard() -> Element {
                                     class: "chart-container",
                                     div {
                                         id: "pie",
-                                        class: "small-plot",
+                                        class: "pie",
                                         title: "Resume Pie",
                                         onmounted: move |_| {
                                             eval(&resume_pie);
@@ -108,7 +108,7 @@ pub fn Dashboard() -> Element {
                                     class: "chart-container",
                                     div {
                                         id: "sankey",
-                                        class: "large-plot",
+                                        class: "sankey",
                                         title: "Sankey",
                                         onmounted: move |_| {
                                             eval(&sankey);
@@ -127,7 +127,7 @@ pub fn Dashboard() -> Element {
                                     class: "chart-container",
                                     div {
                                         id: "calendar",
-                                        class: "large-plot",
+                                        class: "yearly-calendar",
                                         title: "Calendar Heatmap",
                                         onmounted: move |_| {
                                             eval(&heatmap);
