@@ -15,8 +15,17 @@ Built with Rust and Dioxus, it runs on Linux, Windows, and macOS.
 ![Applications Table](screenshots/applications_table.png)
 *Applications table showing job applications with company, role, status, and submission dates*
 
+![Applications Table Filter 1](screenshots/applications_table_filter1.png)
+*Filter job applications by company (Google)*
+
+![Applications Table Filter 2](screenshots/applications_table_filter2.png)
+*Filter job applications by resume and status (Interview)*
+
 ![Interviews](screenshots/interviews.png)
 *Interview tracking view with details and notes for each application*
+
+![Interviews Filter](screenshots/interviews_filter.png)
+*Filter interviews by type*
 
 ![Offers](screenshots/offers.png)
 *Offers management showing salary, bonus, equity details, and acceptance status*
@@ -29,6 +38,15 @@ Built with Rust and Dioxus, it runs on Linux, Windows, and macOS.
 
 ![Add Interview](screenshots/add_interview.png)
 *Add interview details form*
+
+![Sankey](screenshots/sankey.png)
+*Sankey diagram showing application flow*
+
+![Calendar](screenshots/calendar.png)
+*Calendar heatmap showing application submission by day*
+
+![Resume Pie](screenshots/resume_pie.png)
+*Pie chart showing interview distribution by resume*
 
 ### Themes
 The app comes with multiple themes. Check out some of them below.
